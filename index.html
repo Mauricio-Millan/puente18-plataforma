@@ -1,0 +1,1272 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Puente 18+ | Ecosistema Unificado de Transición INSN SB</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        insn: { 50: '#f0f9ff', 100: '#e0f2fe', 600: '#0284c7', 700: '#0369a1', 800: '#075985', 900: '#0c4a6e' },
+                        tealmed: { 500: '#14b8a6', 600: '#0d9488', 700: '#0f766e' },
+                        brand: { 50: '#f0f7ff', 100: '#e0effe', 200: '#bae0fd', 500: '#0284c7', 600: '#0369a1', 700: '#075985', 800: '#0c4a6e' },
+                        medical: { teal: '#0d9488', amber: '#f59e0b', rose: '#f43f5e', emerald: '#10b981', indigo: '#4f46e5' }
+                    },
+                    fontFamily: { sans: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Google Fonts & FontAwesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Marked JS for RAG Markdown -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .pulse-ring { animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite; }
+        @keyframes pulse-ring { 0% { transform: scale(0.8); box-shadow: 0 0 0 0 rgba(13, 148, 136, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(13, 148, 136, 0); } 100% { transform: scale(0.8); box-shadow: 0 0 0 0 rgba(13, 148, 136, 0); } }
+        .fade-in { animation: fadeIn 0.3s ease-in-out; forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* Print Styles for PDF */
+        .print-area { display: none; }
+        @media print {
+            body * { visibility: hidden; }
+            .print-modal-content, .print-modal-content * { visibility: visible; }
+            .print-modal-content { position: absolute; left: 0; top: 0; width: 100%; box-shadow: none; border: none; }
+            .no-print { display: none !important; }
+        }
+    </style>
+</head>
+<body class="h-full flex flex-col text-slate-800 bg-slate-100 overflow-x-hidden relative">
+
+    <!-- Toast Container -->
+    <div id="toastContainer" class="fixed top-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- ================= LOGIN SCREEN ================= -->
+    <div id="login-view" class="fixed inset-0 z-50 bg-slate-900 flex items-center justify-center p-4 transition-opacity duration-500">
+        <div class="bg-white rounded-3xl shadow-2xl overflow-hidden max-w-4xl w-full flex flex-col md:flex-row">
+            <!-- Left Info Panel -->
+            <div class="bg-insn-900 text-white p-8 md:w-5/12 flex flex-col justify-between relative overflow-hidden">
+                <div class="absolute -right-10 -bottom-10 opacity-10 text-9xl pointer-events-none"><i class="fa-solid fa-bridge"></i></div>
+                <div class="relative z-10">
+                    <div class="w-12 h-12 bg-white rounded-xl text-insn-900 flex items-center justify-center text-2xl font-bold mb-6 shadow-lg"><i class="fa-solid fa-bridge"></i></div>
+                    <h1 class="text-2xl font-bold mb-2">Plataforma Puente 18+</h1>
+                    <p class="text-insn-100 text-sm leading-relaxed mb-6">Ecosistema unificado de transición pediátrico-adulto. Integra la evaluación de madurez, el Lakehouse Clínico y la transferencia segura de pacientes.</p>
+                </div>
+                <div class="relative z-10 space-y-3 text-xs text-insn-200 bg-insn-800/50 p-4 rounded-xl border border-insn-700">
+                    <p class="font-bold text-white border-b border-insn-700 pb-1 mb-2">Credenciales de Demo (Pass: 123):</p>
+                    <p><i class="fa-solid fa-user-doctor w-4 text-amber-300"></i> Pediatra/Gestor: <span class="font-mono text-amber-300">PED123456</span></p>
+                    <p><i class="fa-solid fa-user-nurse w-4 text-sky-300"></i> Médico Adultos: <span class="font-mono text-sky-300">M123456</span></p>
+                    <p><i class="fa-solid fa-mobile-screen w-4 text-emerald-300"></i> App Paciente: <span class="font-mono text-emerald-300">P123456</span></p>
+                    <p class="text-[10px] italic ml-5 text-indigo-300">*Requiere Responsable: R123456</p>
+                </div>
+            </div>
+            
+            <!-- Right Login Panel -->
+            <div class="p-8 md:w-7/12 flex flex-col justify-center">
+                <div class="mb-8 text-center">
+                    <h2 class="text-2xl font-bold text-slate-800">Iniciar Sesión</h2>
+                    <p class="text-sm text-slate-500 mt-1">Ingrese sus credenciales institucionales o código de paciente</p>
+                </div>
+
+                <form onsubmit="handleLogin(event)" class="space-y-4 max-w-sm mx-auto w-full">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Usuario / ID Paciente</label>
+                        <div class="relative">
+                            <i class="fa-solid fa-user absolute left-3 top-3.5 text-slate-400"></i>
+                            <input type="text" id="login-user" required class="w-full bg-slate-50 border border-slate-300 rounded-xl pl-10 pr-3 py-3 text-sm focus:ring-2 focus:ring-insn-500 outline-none uppercase transition" placeholder="Ej. PED123456 o P123456" onkeyup="checkParentalControl(this.value)">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Contraseña</label>
+                        <div class="relative">
+                            <i class="fa-solid fa-lock absolute left-3 top-3.5 text-slate-400"></i>
+                            <input type="password" id="login-pass" required class="w-full bg-slate-50 border border-slate-300 rounded-xl pl-10 pr-3 py-3 text-sm focus:ring-2 focus:ring-insn-500 outline-none transition" placeholder="••••••••">
+                        </div>
+                    </div>
+
+                    <!-- Parental Control Dynamic Field -->
+                    <div id="parental-control-field" class="hidden bg-indigo-50 border border-indigo-200 p-4 rounded-xl fade-in">
+                        <label class="block text-xs font-bold text-indigo-900 mb-1 flex items-center gap-1"><i class="fa-solid fa-shield-halved"></i> Control Parental Requerido (Perfil B)</label>
+                        <p class="text-[10px] text-indigo-700 mb-2">Este paciente requiere autorización de su responsable legal.</p>
+                        <input type="text" id="login-parent-code" placeholder="Código Responsable (Use R123456)" class="w-full bg-white border border-indigo-300 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-indigo-500 outline-none uppercase">
+                    </div>
+
+                    <button type="submit" class="w-full bg-insn-700 hover:bg-insn-800 text-white font-bold py-3 rounded-xl shadow-md transition flex items-center justify-center gap-2 mt-2">
+                        <span>Ingresar a la Plataforma</span>
+                        <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= MAIN APP SHELL ================= -->
+    <div id="app-shell" class="hidden flex flex-col h-full">
+        <!-- Main Header -->
+        <header class="bg-insn-900 text-white shadow-md sticky top-0 z-30">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
+                <!-- Branding -->
+                <div class="flex items-center space-x-3">
+                    <div class="bg-white p-1.5 rounded-lg text-insn-900 flex items-center justify-center w-10 h-10 shadow-sm"><i class="fa-solid fa-bridge text-xl"></i></div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="font-bold text-lg tracking-tight">Puente 18+</span>
+                            <span id="role-badge" class="bg-amber-500/20 text-amber-300 text-[10px] px-2 py-0.5 rounded border border-amber-400/30 font-medium uppercase">INSN SB</span>
+                        </div>
+                        <p class="text-[10px] text-slate-300">Hackatón Salud 2026</p>
+                    </div>
+                </div>
+
+                <!-- User Actions -->
+                <div class="flex items-center gap-4">
+                    <div class="text-right hidden sm:block">
+                        <p class="text-sm font-bold" id="user-name-display">Usuario</p>
+                        <p class="text-[10px] text-slate-300">Sesión Activa</p>
+                    </div>
+                    <div class="w-9 h-9 rounded-full bg-insn-700 border border-insn-600 flex items-center justify-center text-lg shadow-inner">
+                        <i id="role-icon" class="fa-solid fa-user"></i>
+                    </div>
+                    <button onclick="logout()" class="text-slate-300 hover:text-white px-2"><i class="fa-solid fa-right-from-bracket"></i></button>
+                </div>
+            </div>
+
+            <!-- Navigation Tabs (Pediatra) -->
+            <nav id="ped-tabs" class="hidden bg-insn-800 border-t border-insn-700/50">
+                <div class="max-w-7xl mx-auto px-4 overflow-x-auto custom-scrollbar flex space-x-1 py-2 text-xs font-medium">
+                    <button onclick="switchRoleTab('ped', 'tablero')" id="ptab-tablero" class="role-nav-tab px-3 py-2 rounded-md flex items-center gap-2 text-white bg-insn-900 border border-insn-600 font-bold whitespace-nowrap"><i class="fa-solid fa-table-columns"></i> M6: Tablero Kanban</button>
+                    <button onclick="switchRoleTab('ped', 'checklist')" id="ptab-checklist" class="role-nav-tab px-3 py-2 rounded-md flex items-center gap-2 text-slate-300 hover:text-white hover:bg-insn-700/50 whitespace-nowrap"><i class="fa-solid fa-list-check"></i> M3: Checklist Madurez</button>
+                    <button onclick="switchRoleTab('ped', 'resumen')" id="ptab-resumen" class="role-nav-tab px-3 py-2 rounded-md flex items-center gap-2 text-slate-300 hover:text-white hover:bg-insn-700/50 whitespace-nowrap"><i class="fa-solid fa-file-medical"></i> M4: Resumen Clínico</button>
+                    <button onclick="switchRoleTab('ped', 'directorio')" id="ptab-directorio" class="role-nav-tab px-3 py-2 rounded-md flex items-center gap-2 text-slate-300 hover:text-white hover:bg-insn-700/50 whitespace-nowrap"><i class="fa-solid fa-hospital"></i> M5: Referencia</button>
+                    <button onclick="switchRoleTab('ped', 'ingesta')" id="ptab-ingesta" class="role-nav-tab px-3 py-2 rounded-md flex items-center gap-2 text-slate-300 hover:text-white hover:bg-insn-700/50 whitespace-nowrap"><i class="fa-solid fa-file-arrow-up"></i> M7: Ingesta Capa Oro</button>
+                    <button onclick="switchRoleTab('ped', 'bitacora')" id="ptab-bitacora" class="role-nav-tab px-3 py-2 rounded-md flex items-center gap-2 text-slate-300 hover:text-white hover:bg-insn-700/50 whitespace-nowrap"><i class="fa-solid fa-clipboard-list"></i> M2: Bitácora</button>
+                </div>
+            </nav>
+
+            <!-- Navigation Tabs (Médico Adultos) -->
+            <nav id="med-tabs" class="hidden bg-tealmed-900 border-t border-tealmed-800/50">
+                <div class="max-w-7xl mx-auto px-4 overflow-x-auto custom-scrollbar flex space-x-1 py-2 text-xs font-medium">
+                    <button onclick="switchRoleTab('med', 'dashboard')" id="mtab-dashboard" class="role-nav-tab px-3 py-2 rounded-md flex items-center gap-2 text-white bg-tealmed-800 border border-tealmed-600 font-bold whitespace-nowrap"><i class="fa-solid fa-users"></i> Mis Referidos</button>
+                    <button onclick="switchRoleTab('med', 'lakehouse')" id="mtab-lakehouse" class="role-nav-tab px-3 py-2 rounded-md flex items-center gap-2 text-slate-300 hover:text-white hover:bg-tealmed-700/50 whitespace-nowrap"><i class="fa-solid fa-database"></i> Lakehouse</button>
+                    <button onclick="switchRoleTab('med', 'rag')" id="mtab-rag" class="role-nav-tab px-3 py-2 rounded-md flex items-center gap-2 text-slate-300 hover:text-white hover:bg-tealmed-700/50 whitespace-nowrap"><i class="fa-solid fa-robot"></i> Asistente RAG</button>
+                    <button onclick="switchRoleTab('med', 'ingesta')" id="mtab-ingesta" class="role-nav-tab px-3 py-2 rounded-md flex items-center gap-2 text-slate-300 hover:text-white hover:bg-tealmed-700/50 whitespace-nowrap"><i class="fa-solid fa-file-arrow-up"></i> M7: Ingesta (Nuevos)</button>
+                </div>
+            </nav>
+        </header>
+
+        <main class="flex-1 w-full mx-auto p-4 sm:p-6 overflow-y-auto relative">
+
+            <!-- ========================================================= -->
+            <!-- VISTAS DEL PEDIATRA / GESTOR (PED123456)                  -->
+            <!-- ========================================================= -->
+            <div id="ped-workspace" class="hidden max-w-7xl mx-auto space-y-6 fade-in">
+                
+                <!-- Tablero Kanban M6 -->
+                <section id="ped-tablero" class="role-view space-y-4">
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+                        <div>
+                            <h2 class="font-bold text-slate-800"><i class="fa-solid fa-table-columns text-insn-600"></i> Tablero Kanban de Transición</h2>
+                            <p class="text-xs text-slate-500">Gestione la ruta de sus pacientes.</p>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div class="bg-slate-100 rounded-xl p-3 border border-slate-200 min-h-[400px]">
+                            <h3 class="text-xs font-bold text-slate-600 mb-3 border-b border-slate-200 pb-2">1. EN PREPARACIÓN</h3>
+                            <div class="bg-white p-3 rounded-lg border border-l-4 border-l-brand-500 shadow-sm text-xs font-bold">P-101 (Mateo)<br><span class="text-[9px] font-normal text-slate-500">Checklist: 68% | Perfil B</span></div>
+                            <div class="bg-white p-3 rounded-lg border border-l-4 border-l-brand-500 shadow-sm text-xs font-bold mt-2">P-103 (Carlos)<br><span class="text-[9px] font-normal text-slate-500">Checklist: 35%</span></div>
+                        </div>
+                        <div class="bg-indigo-50 rounded-xl p-3 border border-indigo-100 min-h-[400px]">
+                            <h3 class="text-xs font-bold text-indigo-800 mb-3 border-b border-indigo-200 pb-2">2. REFERIDO</h3>
+                        </div>
+                        <div class="bg-amber-50 rounded-xl p-3 border border-amber-100 min-h-[400px]">
+                            <h3 class="text-xs font-bold text-amber-800 mb-3 border-b border-amber-200 pb-2">3. CITA OTORGADA (QR)</h3>
+                            <div class="bg-white p-3 rounded-lg border border-l-4 border-l-amber-500 shadow-sm text-xs font-bold">P-102 (Sofía)<br><span class="text-[9px] font-normal text-slate-500">Hosp. Dos de Mayo</span></div>
+                        </div>
+                        <div class="bg-emerald-50 rounded-xl p-3 border border-emerald-100 min-h-[400px]">
+                            <h3 class="text-xs font-bold text-emerald-800 mb-3 border-b border-emerald-200 pb-2">4. ATENDIDO EN ADULTOS</h3>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Checklist M3 -->
+                <section id="ped-checklist" class="role-view hidden space-y-4">
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div>
+                            <h2 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                                <i class="fa-solid fa-list-check text-insn-600"></i>
+                                <span>Módulo 3: Evaluador de Preparación (HCT)</span>
+                            </h2>
+                            <p class="text-xs text-slate-500 mt-1">Evaluación de 22 competencias y categorización del perfil.</p>
+                        </div>
+                        <div class="flex items-center space-x-3 bg-slate-50 p-2 rounded-xl border border-slate-200">
+                            <label class="text-xs text-slate-600 font-medium whitespace-nowrap">Paciente:</label>
+                            <select id="ped-chk-sel" onchange="loadChecklistPediatra()" class="text-xs bg-white border border-slate-300 rounded-lg py-1.5 px-3 focus:outline-none font-bold text-slate-800">
+                                <option value="P-101">P-101 (Mateo)</option>
+                                <option value="P-102">P-102 (Sofía)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-4">
+                            <h3 class="font-bold text-sm border-b pb-2">Categorización Perfil</h3>
+                            <select id="ped-chk-perfil" onchange="showToast('Perfil actualizado', 'success')" class="w-full bg-slate-50 border p-2 rounded-lg text-xs font-bold">
+                                <option value="A">Perfil A: Transición Rápida</option>
+                                <option value="B">Perfil B: Progresiva (Control Parental)</option>
+                                <option value="C">Perfil C: Multidisciplinaria</option>
+                            </select>
+                            <div class="bg-sky-50 text-sky-800 text-[10px] p-2 rounded border border-sky-200">Asignar Perfil B habilita el Control Parental en la App del Paciente.</div>
+                        </div>
+                        <div class="md:col-span-2 bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-4">
+                            <h3 class="font-bold text-sm border-b pb-2">22 Ítems de Madurez</h3>
+                            <div id="ped-chk-list" class="space-y-2 max-h-[300px] overflow-y-auto custom-scrollbar pr-2"></div>
+                            <button onclick="showToast('Avance guardado.', 'success')" class="w-full bg-insn-600 text-white font-bold py-2 rounded-xl text-sm">Guardar Avance</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Resumen M4 (Formato MINSA) -->
+                <section id="ped-resumen" class="role-view hidden space-y-6">
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div>
+                            <h2 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                                <i class="fa-solid fa-file-medical text-medical-teal"></i>
+                                <span>Módulo 4: Resumen Clínico de Transición (MINSA / INSN SB)</span>
+                            </h2>
+                            <p class="text-xs text-slate-500 mt-1">Estructura estandarizada con 19 campos clave, en 5 secciones.</p>
+                        </div>
+                        <div class="flex items-center space-x-3 bg-slate-50 p-2 rounded-xl border border-slate-200">
+                            <label class="text-xs text-slate-600 font-medium whitespace-nowrap">Paciente:</label>
+                            <select id="summary-patient-select" onchange="loadPatientSummary()" class="text-xs bg-white border border-slate-300 rounded-lg py-1.5 px-3 focus:outline-none font-bold text-slate-800">
+                                <option value="P-101">P-101 (Mateo)</option>
+                                <option value="P-102">P-102 (Sofía)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-8">
+                        <div class="flex justify-between items-center pb-4 border-b border-slate-200">
+                            <h3 id="summary-patient-name-display" class="text-sm font-bold text-slate-900">P-101 (Mateo) - Nefrología</h3>
+                            <div class="flex gap-2">
+                                <button onclick="previewSummaryPDF()" class="px-4 py-2 bg-slate-800 text-white text-xs font-semibold rounded-xl shadow-sm"><i class="fa-solid fa-file-pdf text-rose-400"></i> Exportar Hoja MINSA</button>
+                                <button onclick="saveClinicalSummary()" class="px-4 py-2 bg-medical-teal text-white text-xs font-semibold rounded-xl shadow-sm"><i class="fa-solid fa-floppy-disk"></i> Guardar Resumen</button>
+                            </div>
+                        </div>
+
+                        <!-- SECCIÓN 1: SALUD FÍSICA Y TRATAMIENTO -->
+                        <div class="space-y-4">
+                            <div class="flex items-center space-x-2 border-b border-slate-200 pb-2">
+                                <span class="w-6 h-6 rounded-lg bg-teal-100 text-teal-800 flex items-center justify-center font-bold text-xs">1</span>
+                                <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider">Perfil Clínico, Especialistas y Tratamiento Farmacológico</h3>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/60 space-y-2">
+                                    <label class="block text-xs font-bold text-slate-800 flex items-center justify-between">
+                                        <span>1. Diagnóstico Principal y Secundarios <span class="text-rose-500">*</span></span>
+                                        <span class="text-[10px] text-teal-700 bg-teal-50 px-2 py-0.5 rounded border border-teal-200 font-medium">Clínico</span>
+                                    </label>
+                                    <textarea id="sum-dx" rows="3" class="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none" placeholder="Diagnóstico nosológico, CIE-10, fecha de diagnóstico, estado actual..."></textarea>
+                                </div>
+                                <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/60 space-y-2">
+                                    <label class="block text-xs font-bold text-slate-800 flex items-center justify-between">
+                                        <span>2. Especialistas e Interconsultas Involucradas <span class="text-rose-500">*</span></span>
+                                        <span class="text-[10px] text-teal-700 bg-teal-50 px-2 py-0.5 rounded border border-teal-200 font-medium">Multidisciplinario</span>
+                                    </label>
+                                    <textarea id="sum-especialistas" rows="3" class="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none" placeholder="Médico tratante principal, subespecialistas (Nefrología, Cardiología, Psicología, Trabajo Social)..."></textarea>
+                                </div>
+                                <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/60 space-y-2">
+                                    <label class="block text-xs font-bold text-slate-800 flex items-center justify-between">
+                                        <span>3. Medicamentos y Esquema Farmacológico Activo <span class="text-rose-500">*</span></span>
+                                        <span class="text-[10px] text-teal-700 bg-teal-50 px-2 py-0.5 rounded border border-teal-200 font-medium">Tratamiento</span>
+                                    </label>
+                                    <textarea id="sum-medicamentos" rows="3" class="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none" placeholder="Dosis, vía, frecuencia, horario y última calibración de esquema..."></textarea>
+                                </div>
+                                <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/60 space-y-2">
+                                    <label class="block text-xs font-bold text-slate-800 flex items-center justify-between">
+                                        <span>4. Alergias y Reacciones Adversas <span class="text-rose-500">*</span></span>
+                                        <span class="text-[10px] text-rose-700 bg-rose-50 px-2 py-0.5 rounded border border-rose-200 font-medium">Seguridad</span>
+                                    </label>
+                                    <div class="grid grid-cols-1 gap-2">
+                                        <select id="sum-alergias-combo" class="w-full text-xs p-2 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500">
+                                            <option value="Sin alergias conocidas">Sin alergias conocidas (RAM Negativa)</option>
+                                            <option value="Alergia Confirmada a Fármacos">Alergia Confirmada a Fármacos / Medicamentos</option>
+                                            <option value="Alergia a Alimentos o Látex">Alergia a Alimentos / Látex / Sustancias de contraste</option>
+                                            <option value="Múltiples alergias / RAM Severa">Múltiples alergias documentadas (RAM Severa)</option>
+                                        </select>
+                                        <textarea id="sum-alergias-detalle" rows="2" class="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none" placeholder="Detalle el fármaco o sustancia y el tipo de reacción (shock, rash, broncoespasmo)..."></textarea>
+                                    </div>
+                                </div>
+                                <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/60 space-y-2 md:col-span-2">
+                                    <label class="block text-xs font-bold text-slate-800 flex items-center justify-between">
+                                        <span>5. Antecedentes de Hospitalización, Cirugías y Procedimientos Relevantes <span class="text-rose-500">*</span></span>
+                                        <span class="text-[10px] text-teal-700 bg-teal-50 px-2 py-0.5 rounded border border-teal-200 font-medium">Historial</span>
+                                    </label>
+                                    <textarea id="sum-hospitalizaciones" rows="3" class="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none" placeholder="Ingresos previos a UCI/piso, intervenciones quirúrgicas (fechas), procedimientos invasivos..."></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SECCIÓN 2: DESARROLLO, CAPACIDAD Y AUTONOMÍA -->
+                        <div class="space-y-4 pt-4 border-t border-slate-200">
+                            <div class="flex items-center space-x-2 border-b border-slate-200 pb-2">
+                                <span class="w-6 h-6 rounded-lg bg-indigo-100 text-indigo-800 flex items-center justify-center font-bold text-xs">2</span>
+                                <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider">Capacidad Cognitiva, Autonomía y Necesidades Educativas</h3>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                                <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/60 space-y-2">
+                                    <label class="block text-xs font-bold text-slate-800">6. Capacidad Cognitiva <span class="text-rose-500">*</span></label>
+                                    <select id="sum-cognitiva" class="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 font-medium text-slate-700">
+                                        <option value="Conservada / Típica para la edad">Conservada / Típica para la edad cronológica</option>
+                                        <option value="Compromiso Leve (Comprende instrucciones simples)">Compromiso Leve (Comprende instrucciones simples)</option>
+                                        <option value="Compromiso Moderado (Requiere adaptación constante)">Compromiso Moderado (Requiere apoyo continuo)</option>
+                                        <option value="Compromiso Severo / Gran Dependencia Cognitiva">Compromiso Severo / Gran Dependencia Cognitiva</option>
+                                    </select>
+                                    <p class="text-[10px] text-slate-500">Determina el nivel de complejidad del lenguaje médico en consulta.</p>
+                                </div>
+                                <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/60 space-y-2">
+                                    <label class="block text-xs font-bold text-slate-800">7. Grado de Autonomía del Paciente <span class="text-rose-500">*</span></label>
+                                    <select id="sum-autonomia" class="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 font-medium text-slate-700">
+                                        <option value="Autónomo e Independiente (Gestiona sus medicamentos y citas)">Autónomo e Independiente (Maneja citas y fármacos)</option>
+                                        <option value="Autonomía Parcial (Requiere supervisión en dosis o trámites)">Autonomía Parcial (Requiere supervisión puntual)</option>
+                                        <option value="Dependiente Total de Cuidador (No autogestiona)">Dependiente Total de Cuidador Principal</option>
+                                    </select>
+                                    <p class="text-[10px] text-slate-500">Indicador clave para la dinámica de la primera cita de adultos.</p>
+                                </div>
+                                <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/60 space-y-2">
+                                    <label class="block text-xs font-bold text-slate-800">8. Necesidades Educativas / Inserción <span class="text-rose-500">*</span></label>
+                                    <select id="sum-educativas-combo" class="w-full text-xs p-2 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 mb-2">
+                                        <option value="Educación Escolar Regular / Superior">Educación Escolar Regular / Superior Activa</option>
+                                        <option value="Educación Básica Especial / Alternativa (EBA/EBE)">Educación Básica Especial / Alternativa (EBA/EBE)</option>
+                                        <option value="Deserción Escolar por Condición de Salud">Deserción Escolar debida a la Enfermedad</option>
+                                        <option value="Inserción Laboral / Técnico Formativo">Inserción Laboral / Técnico Formativo</option>
+                                    </select>
+                                    <input type="text" id="sum-educativas-detalle" class="w-full text-xs p-2 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500" placeholder="Detalle grado académico, adaptaciones o metas...">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SECCIÓN 3: FACTOR SOCIOFAMILIAR Y COBERTURA SANITARIA -->
+                        <div class="space-y-4 pt-4 border-t border-slate-200">
+                            <div class="flex items-center space-x-2 border-b border-slate-200 pb-2">
+                                <span class="w-6 h-6 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-xs">3</span>
+                                <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider">Soporte Familiar, Situación Socioeconómica y Cobertura de Salud</h3>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                                <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/60 space-y-2">
+                                    <label class="block text-xs font-bold text-slate-800">9. Apoyo Familiar y Cuidador <span class="text-rose-500">*</span></label>
+                                    <select id="sum-apoyo-familiar" class="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 font-medium text-slate-700">
+                                        <option value="Red Familiar Sólida (Padres/Cuidadores Comprometidos)">Red Familiar Sólida (Acompañamiento activo)</option>
+                                        <option value="Apoyo Limitado / Uniparental Sobrecargado">Apoyo Limitado / Uniparental sobrecargado</option>
+                                        <option value="Ausencia de Soporte / Riesgo de Desamparo">Ausencia de Soporte Familiar / Alta vulnerabilidad</option>
+                                    </select>
+                                </div>
+                                <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/60 space-y-2">
+                                    <label class="block text-xs font-bold text-slate-800">10. Clasificación Socioeconómica <span class="text-rose-500">*</span></label>
+                                    <select id="sum-socioeconomica" class="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 font-medium text-slate-700">
+                                        <option value="Pobreza Extrema (Eval. Trabajo Social SIS)">Pobreza Extrema (SIS Gratuito focalizado)</option>
+                                        <option value="Pobre No Extremo (Recursos Limitados)">Pobre No Extremo (Bajos ingresos / Informales)</option>
+                                        <option value="No Pobre / Medio (Sustento Regular)">No Pobre / Medio (Ingresos estables)</option>
+                                    </select>
+                                </div>
+                                <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/60 space-y-2">
+                                    <label class="block text-xs font-bold text-slate-800">11. Cobertura Sanitaria (Seguro) <span class="text-rose-500">*</span></label>
+                                    <select id="sum-cobertura" class="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 font-medium text-slate-700">
+                                        <option value="SIS Gratuito (MINSA / FISSAL)">SIS Gratuito (MINSA / FISSAL Raras-Complejas)</option>
+                                        <option value="SIS Emprendedor / Independiente">SIS Emprendedor / Microempresa</option>
+                                        <option value="EsSalud (Asegurado Titular / Derechohabiente)">EsSalud (Derechohabiente o Titular)</option>
+                                        <option value="Sanidad Fuerzas Armadas / Policiales (FFAA/PNP)">Sanidad FF.AA. / PNP</option>
+                                        <option value="Seguro Privado / Sin Cobertura Formal">Seguro Privado / Sin Cobertura Activa</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SECCIÓN 4: SALUD MENTAL Y DIFICULTADES DE ACCESO -->
+                        <div class="space-y-4 pt-4 border-t border-slate-200">
+                            <div class="flex items-center space-x-2 border-b border-slate-200 pb-2">
+                                <span class="w-6 h-6 rounded-lg bg-rose-100 text-rose-800 flex items-center justify-center font-bold text-xs">4</span>
+                                <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider">Salud Mental y Riesgos de Barrera de Acceso</h3>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/60 space-y-2">
+                                    <label class="block text-xs font-bold text-slate-800 flex items-center justify-between">
+                                        <span>12. Necesidades y Evaluación de Salud Mental <span class="text-rose-500">*</span></span>
+                                        <span class="text-[10px] text-rose-700 bg-rose-50 px-2 py-0.5 rounded border border-rose-200 font-medium">Soporte Emocional</span>
+                                    </label>
+                                    <select id="sum-salud-mental-combo" class="w-full text-xs p-2 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-rose-500 mb-2">
+                                        <option value="Sin patología psiquiátrica / Estable emocionalmente">Sin patología psiquiátrica / Adaptación adecuada</option>
+                                        <option value="Ansiedad / Estrés reactivo al cambio de hospital">Ansiedad / Estrés reactivo al proceso de transición</option>
+                                        <option value="Trastorno Depresivo / Ánimo en seguimiento">Trastorno Depresivo / Control por Psicología</option>
+                                        <option value="Trastorno del Neurodesarrollo / Manejo Psiquiátrico Activo">Manejo Psiquiátrico Activo / Fármacos Psicotrópicos</option>
+                                    </select>
+                                    <textarea id="sum-salud-mental-detalle" rows="2" class="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:outline-none" placeholder="Observaciones psicológicas, adherencia emocional o tratamiento ansiolítico/antidepresivo..."></textarea>
+                                </div>
+                                <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/60 space-y-2">
+                                    <label class="block text-xs font-bold text-slate-800 flex items-center justify-between">
+                                        <span>13. Posibles Dificultades de Acceso al Sistema de Adultos <span class="text-rose-500">*</span></span>
+                                        <span class="text-[10px] text-rose-700 bg-rose-50 px-2 py-0.5 rounded border border-rose-200 font-medium">Alerta de Deserción</span>
+                                    </label>
+                                    <select id="sum-dificultades-combo" class="w-full text-xs p-2 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-rose-500 mb-2">
+                                        <option value="Bajo Riesgo de Deserción (Condiciones óptimas)">Bajo Riesgo de Deserción / Cita y transporte asegurados</option>
+                                        <option value="Saturación de Citas / Demora en Hospital Receptor">Saturación de Citas / Demora prolongada en receptor</option>
+                                        <option value="Barrera Geográfica / Distancia / Costo de Transporte">Barrera Geográfica / Distancia de traslado</option>
+                                        <option value="Temor / Resistencia Familiar al Alta Pediátrica">Temor o Resistencia Familiar al Alta Pediátrica</option>
+                                        <option value="Trámites Administrativos Complejos / Cambio de Seguro">Trámites Administrativos Complejos / Transición de Seguro</option>
+                                    </select>
+                                    <textarea id="sum-dificultades-detalle" rows="2" class="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:outline-none" placeholder="Recomendaciones específicas para el Gestor de Caso y Hospital Receptor para evitar el abandono..."></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SECCIÓN 5: DISPOSITIVOS, RIESGOS Y PLAN DE CONTINUIDAD (NUEVO) -->
+                        <div class="space-y-4 pt-4 border-t border-slate-200">
+                            <div class="flex items-center space-x-2 border-b border-slate-200 pb-2">
+                                <span class="w-6 h-6 rounded-lg bg-amber-100 text-amber-800 flex items-center justify-center font-bold text-xs">5</span>
+                                <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider">Dispositivos, Riesgos y Plan de Continuidad para el Receptor</h3>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/60 space-y-2">
+                                    <label class="block text-xs font-bold text-slate-800 flex items-center justify-between">
+                                        <span>14. Dispositivos Médicos Activos</span>
+                                        <span class="text-[10px] text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200 font-medium">Manejo Inmediato</span>
+                                    </label>
+                                    <textarea id="sum-dispositivos" rows="2" class="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:outline-none" placeholder="Sondas, catéteres, fístulas, marcapasos, ostomías, prótesis y fecha de última revisión/cambio..."></textarea>
+                                </div>
+                                <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/60 space-y-2">
+                                    <label class="block text-xs font-bold text-slate-800 flex items-center justify-between">
+                                        <span>15. Riesgos Clínicos y Señales de Alerta</span>
+                                        <span class="text-[10px] text-rose-700 bg-rose-50 px-2 py-0.5 rounded border border-rose-200 font-medium">Seguridad</span>
+                                    </label>
+                                    <textarea id="sum-riesgos" rows="2" class="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:outline-none" placeholder="Riesgos específicos de la condición (ej. crisis hiperglicémica, rechazo de injerto) y qué señales debe reconocer el paciente..."></textarea>
+                                </div>
+                                <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/60 space-y-2">
+                                    <label class="block text-xs font-bold text-slate-800">16. Esquema de Vacunación</label>
+                                    <textarea id="sum-vacunas" rows="2" class="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:outline-none" placeholder="Vacunas aplicadas, dosis pendientes o refuerzos requeridos por su condición..."></textarea>
+                                </div>
+                                <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/60 space-y-2">
+                                    <label class="block text-xs font-bold text-slate-800 flex items-center justify-between">
+                                        <span>17. Recomendaciones de Continuidad <span class="text-rose-500">*</span></span>
+                                        <span class="text-[10px] text-teal-700 bg-teal-50 px-2 py-0.5 rounded border border-teal-200 font-medium">Plan de Acción</span>
+                                    </label>
+                                    <textarea id="sum-recomendaciones" rows="2" class="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:outline-none" placeholder="Frecuencia de próximos controles, objetivos terapéuticos a corto plazo, indicación explícita para el equipo receptor..."></textarea>
+                                </div>
+                                <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/60 space-y-2 md:col-span-2">
+                                    <label class="block text-xs font-bold text-slate-800">18. Contacto del Cuidador / Responsable</label>
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
+                                        <input type="text" id="sum-cuidador-nombre" class="w-full text-xs p-2 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500" placeholder="Nombre completo">
+                                        <input type="text" id="sum-cuidador-relacion" class="w-full text-xs p-2 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500" placeholder="Relación (madre, padre, tutor...)">
+                                        <input type="text" id="sum-cuidador-telefono" class="w-full text-xs p-2 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500" placeholder="Teléfono / Celular">
+                                    </div>
+                                </div>
+                                <div class="p-4 rounded-xl border border-indigo-200 bg-indigo-50/60 space-y-2 md:col-span-2 flex items-center justify-between flex-wrap gap-3">
+                                    <div>
+                                        <label class="block text-xs font-bold text-indigo-900">19. Nivel de Preparación (vinculado a Módulo 3)</label>
+                                        <p id="sum-checklist-resumen" class="text-[11px] text-indigo-700 mt-1">Cargando avance del Checklist de Madurez...</p>
+                                    </div>
+                                    <button type="button" onclick="switchRoleTab('ped','checklist')" class="text-[10px] font-bold bg-white border border-indigo-300 text-indigo-700 px-3 py-1.5 rounded-lg hover:bg-indigo-100 whitespace-nowrap">Ver Checklist Completo</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Directorio M5 -->
+
+                <section id="ped-directorio" class="role-view hidden space-y-4">
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex justify-between items-center">
+                        <div>
+                            <h2 class="font-bold text-slate-800"><i class="fa-solid fa-hospital text-emerald-600"></i> Módulo 5: Asignar Hospital Receptor</h2>
+                            <p class="text-xs text-slate-500">Derive al paciente a su nuevo centro. Esto generará su Código QR de Consentimiento.</p>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-4">
+                            <h3 class="font-bold text-sm border-b pb-2">Hospitales Disponibles</h3>
+                            <div class="space-y-2">
+                                <div class="p-3 border rounded-xl bg-slate-50 flex justify-between items-center"><div><p class="font-bold text-xs text-slate-800">Hospital Loayza</p><p class="text-[10px] text-emerald-600">Nefrología Adultos</p></div><span class="bg-emerald-100 text-emerald-800 text-[9px] px-2 py-1 rounded font-bold">Disponible</span></div>
+                                <div class="p-3 border rounded-xl bg-slate-50 flex justify-between items-center"><div><p class="font-bold text-xs text-slate-800">Hospital Dos de Mayo</p><p class="text-[10px] text-emerald-600">Hematología Adultos</p></div><span class="bg-emerald-100 text-emerald-800 text-[9px] px-2 py-1 rounded font-bold">Disponible</span></div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-4">
+                            <h3 class="font-bold text-sm border-b pb-2">Ejecutar Referencia</h3>
+                            <div class="space-y-3 text-xs">
+                                <div><label class="font-bold">Paciente:</label><select class="w-full bg-slate-50 border p-2 rounded-lg"><option>P-101 (Mateo)</option></select></div>
+                                <div><label class="font-bold">Destino:</label><select class="w-full bg-slate-50 border p-2 rounded-lg"><option>Hospital Loayza - Nefrología</option></select></div>
+                                <button onclick="showToast('Referencia ejecutada. QR Generado en la app del paciente.', 'success')" class="w-full bg-emerald-600 text-white font-bold py-2.5 rounded-xl shadow-sm"><i class="fa-solid fa-paper-plane"></i> Confirmar y Generar QR</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Bitácora M2 -->
+                <section id="ped-bitacora" class="role-view hidden space-y-6">
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex justify-between items-center">
+                        <div>
+                            <h2 class="font-bold text-slate-800 text-lg"><i class="fa-solid fa-clipboard-check text-insn-600"></i> Bitácora de Auditoría (M2)</h2>
+                            <p class="text-xs text-slate-500">Historial inmutable de gestiones.</p>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                            <h3 class="font-bold text-sm border-b pb-2">Nuevo Registro</h3>
+                            <select id="bit-tipo" class="w-full text-xs p-2 bg-slate-50 border rounded-lg"><option>Llamada a Familia</option><option>Coordinación Hospital</option></select>
+                            <textarea id="bit-nota" class="w-full text-xs p-2 bg-slate-50 border rounded-lg" rows="3" placeholder="Detalles de la gestión..."></textarea>
+                            <button onclick="addBitacoraLog()" class="w-full bg-insn-600 text-white text-xs font-bold py-2 rounded-lg">Añadir Registro</button>
+                        </div>
+                        <div class="md:col-span-2 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+                            <h3 class="font-bold text-sm border-b pb-2 mb-4">Línea de Tiempo</h3>
+                            <div id="bitacora-timeline" class="space-y-4 relative before:absolute before:inset-0 before:left-2 before:w-0.5 before:bg-slate-200 pl-6 text-xs">
+                                <div class="relative"><span class="absolute -left-7 top-1 w-3 h-3 rounded-full bg-insn-500 border-2 border-white ring-2 ring-insn-200"></span><h4 class="font-bold">Llamada a Familia</h4><p class="text-slate-500">Ayer - Madre confirma interés en transición.</p></div>
+                                <div class="relative"><span class="absolute -left-7 top-1 w-3 h-3 rounded-full bg-insn-500 border-2 border-white ring-2 ring-insn-200"></span><h4 class="font-bold">Evaluación</h4><p class="text-slate-500">Hace 3 días - Completó 68% del Checklist.</p></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+
+            <!-- ========================================================= -->
+            <!-- VISTAS DEL PACIENTE (APP MÓVIL) (P123456)                 -->
+            <!-- ========================================================= -->
+            <div id="pac-workspace" class="hidden flex justify-center items-center py-4 fade-in">
+                <!-- Mobile Frame -->
+                <div class="bg-slate-900 rounded-[2.5rem] shadow-2xl border-[6px] border-slate-800 w-full max-w-sm h-[750px] relative flex flex-col overflow-hidden">
+                    
+                    <!-- App Header -->
+                    <div class="bg-indigo-600 p-5 pb-8 text-white rounded-b-3xl shadow-md shrink-0 z-10 relative">
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="font-bold tracking-wider text-sm"><i class="fa-solid fa-bridge"></i> MiTransición</span>
+                            <div class="flex items-center gap-2">
+                                <span class="bg-indigo-500 text-[9px] px-2 py-1 rounded font-bold border border-indigo-400">Perfil B (Parental)</span>
+                                <div class="w-8 h-8 bg-indigo-200 rounded-full flex items-center justify-center text-indigo-700 font-bold">M</div>
+                            </div>
+                        </div>
+                        <h2 class="text-xl font-bold">¡Hola, Mateo!</h2>
+                        <p class="text-xs text-indigo-200">Hospital Origen: INSN SB</p>
+                    </div>
+
+                    <!-- Scrollable Area -->
+                    <div class="flex-1 bg-slate-50 overflow-y-auto no-scrollbar relative z-0 pb-20">
+                        
+                        <!-- VIEW: INICIO (QR) -->
+                        <div id="pac-view-inicio" class="pac-view px-5 pt-4 pb-6 space-y-4">
+                            <div class="-mt-8 relative z-10 bg-white rounded-2xl p-4 shadow-lg border border-slate-100 flex flex-col items-center text-center space-y-2">
+                                <span class="text-[10px] font-bold uppercase tracking-widest text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full"><i class="fa-solid fa-check"></i> Cita Confirmada</span>
+                                <h3 class="text-sm font-bold text-slate-800">Primera Cita: Nefrología Adultos</h3>
+                                <p class="text-[10px] text-slate-500">Hosp. Nacional Arzobispo Loayza</p>
+                                
+                                <div class="w-36 h-36 bg-white border-2 border-slate-200 rounded-xl p-2 relative flex items-center justify-center pulse-ring my-2">
+                                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=AUTH-TOKEN-PACIENTE" alt="QR" class="w-full h-full opacity-90">
+                                    <div class="absolute w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-sm border border-slate-100">
+                                        <i class="fa-solid fa-key text-sm text-indigo-600"></i>
+                                    </div>
+                                </div>
+                                <p class="text-[10px] text-slate-500 px-2 leading-tight">
+                                    Muestra este código al llegar. Siruye para <strong>Confirmar tu asistencia</strong> y para dar <strong>Consentimiento</strong> al nuevo doctor para que vea tu historia.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- VIEW: PREPARACIÓN -->
+                        <div id="pac-view-prep" class="pac-view hidden px-5 py-6 space-y-4">
+                            <h3 class="font-bold text-slate-800 text-sm border-b pb-2">Mi Avance de Madurez</h3>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-xs font-semibold text-slate-600">Progreso Total</span>
+                                <span class="text-xs font-bold text-indigo-600">68%</span>
+                            </div>
+                            <div class="w-full bg-slate-200 rounded-full h-2 mb-4">
+                                <div class="bg-indigo-600 h-2 rounded-full" style="width: 68%"></div>
+                            </div>
+                            <p class="text-[10px] text-slate-500 mb-3">Las habilidades en verde ya las dominas. Practica las que están en rojo (Solo lectura).</p>
+                            <div id="pac-read-chk" class="space-y-2 text-[10px]">
+                                <!-- JS Populated -->
+                            </div>
+                        </div>
+
+                        <!-- VIEW: RESUMEN -->
+                        <div id="pac-view-resumen" class="pac-view hidden px-5 py-6 space-y-4">
+                            <h3 class="font-bold text-slate-800 text-sm border-b pb-2">Mis Datos de Salud</h3>
+                            <p class="text-[10px] text-slate-500 mb-3">Versión simplificada de tu historia oficial (M4).</p>
+                            <div class="bg-white rounded-xl border border-slate-200 p-4 space-y-3 text-xs shadow-sm">
+                                <div><strong class="text-indigo-800 block text-[10px] uppercase">Mi Diagnóstico</strong><span class="text-slate-700 font-medium">Enfermedad Renal Crónica Estadio V.</span></div>
+                                <div class="border-t pt-2"><strong class="text-indigo-800 block text-[10px] uppercase">Mis Especialistas</strong><span class="text-slate-700">Nefrología Pediátrica, Nutrición Renal.</span></div>
+                                <div class="border-t pt-2"><strong class="text-indigo-800 block text-[10px] uppercase">Mis Medicinas</strong><span class="text-slate-700">Eritropoyetina 4000 UI, Furosemida 40mg.</span></div>
+                                <div class="border-t pt-2"><strong class="text-rose-800 block text-[10px] uppercase">Mis Alergias</strong><span class="text-rose-700 bg-rose-50 px-2 py-0.5 rounded inline-block mt-1 font-semibold">Vancomicina (RAM Severa)</span></div>
+                                <div class="border-t pt-2"><strong class="text-indigo-800 block text-[10px] uppercase">Mi Seguro</strong><span class="text-slate-700">SIS Gratuito (FISSAL)</span></div>
+                            </div>
+
+                            <!-- Mis Documentos -->
+                            <div class="flex items-center justify-between pt-2">
+                                <h3 class="font-bold text-slate-800 text-sm">Mis Documentos</h3>
+                                <button onclick="openUploadModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-[10px] font-bold px-3 py-1.5 rounded-lg shadow-sm flex items-center gap-1"><i class="fa-solid fa-plus"></i> Subir</button>
+                            </div>
+                            <p class="text-[10px] text-slate-500 -mt-2">Sube tus recetas, resultados o indicaciones de cada cita. Tu médico las revisará antes de incluirlas en tu historia.</p>
+                            <div id="pac-doc-list" class="space-y-2 text-[10px]">
+                                <!-- JS Populated -->
+                            </div>
+
+                            <!-- Quién vio mi información -->
+                            <div class="flex items-center justify-between pt-4">
+                                <h3 class="font-bold text-slate-800 text-sm">¿Quién vio mi información?</h3>
+                                <span class="bg-indigo-50 text-indigo-700 text-[8px] font-bold px-2 py-1 rounded-full border border-indigo-100 whitespace-nowrap">Ley N.° 29733</span>
+                            </div>
+                            <p class="text-[10px] text-slate-500 -mt-2">Cada consulta a tu historia clínica queda registrada. Nadie puede verla sin dejar huella.</p>
+                            <div id="pac-access-log" class="space-y-2 text-[10px]"></div>
+                        </div>
+
+                        <!-- VIEW: RUTA -->
+                        <div id="pac-view-ruta" class="pac-view hidden px-5 py-6 space-y-4">
+                            <h3 class="font-bold text-slate-800 text-sm border-b pb-2">Mi Línea de Tiempo</h3>
+                            <div class="relative pl-6 space-y-6 before:absolute before:inset-0 before:left-3 before:w-0.5 before:bg-indigo-100 mt-4">
+                                <div class="relative">
+                                    <span class="absolute -left-7 top-1 w-3 h-3 rounded-full bg-emerald-500 border-2 border-white ring-2 ring-emerald-200"></span>
+                                    <h4 class="text-xs font-bold text-slate-800">1. Preparación Iniciada</h4>
+                                    <p class="text-[10px] text-slate-500">12/08/2026 - Evaluación de madurez al 68%.</p>
+                                </div>
+                                <div class="relative">
+                                    <span class="absolute -left-7 top-1 w-3 h-3 rounded-full bg-emerald-500 border-2 border-white ring-2 ring-emerald-200"></span>
+                                    <h4 class="text-xs font-bold text-slate-800">2. Hospital Asignado</h4>
+                                    <p class="text-[10px] text-slate-500 mb-1">14/08/2026 - Referido al Hospital Loayza.</p>
+                                    <button onclick="alert('Dr. Valdivia (Nefrología Adultos)\nTeléfono: (01) 614-4646\nConsultorio 21B')" class="text-[9px] bg-slate-100 text-slate-700 px-2 py-1 rounded border border-slate-200 font-bold"><i class="fa-solid fa-phone"></i> Ver Contacto del Nuevo Doctor</button>
+                                </div>
+                                <div class="relative">
+                                    <span class="absolute -left-7 top-1 w-3 h-3 rounded-full bg-amber-500 border-2 border-white ring-2 ring-amber-200 animate-pulse"></span>
+                                    <h4 class="text-xs font-bold text-amber-700">3. Primera Cita (Pendiente)</h4>
+                                    <p class="text-[10px] text-slate-500 mb-1">20/08/2026 - Presentarse en admisión adultos.</p>
+                                    <button onclick="switchRoleTab('pac', 'inicio')" class="text-[9px] bg-indigo-50 text-indigo-700 px-2 py-1 rounded border border-indigo-200 font-bold"><i class="fa-solid fa-qrcode"></i> Abrir QR de Consentimiento</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- VIEW: ASISTENTE -->
+                        <div id="pac-view-asistente" class="pac-view hidden px-5 py-6 flex flex-col h-[550px] space-y-3">
+                            <div class="bg-indigo-50 border border-indigo-100 p-3 rounded-xl flex items-center gap-3 shadow-sm">
+                                <div class="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center"><i class="fa-solid fa-robot"></i></div>
+                                <div><h3 class="font-bold text-xs text-indigo-900">Asistente Puente</h3><p class="text-[9px] text-indigo-600">Basado en tus datos</p></div>
+                            </div>
+                            <div class="flex-1 bg-white rounded-xl border border-slate-200 p-3 flex flex-col justify-end space-y-3 shadow-inner">
+                                <div class="flex gap-2">
+                                    <div class="w-6 h-6 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center text-[10px] shrink-0"><i class="fa-solid fa-robot"></i></div>
+                                    <div class="bg-slate-100 rounded-lg rounded-tl-none p-2 text-[11px] text-slate-700">
+                                        ¡Hola Mateo! Recuerda que mañana te toca Hemodiálisis. Para tu cita del día 20 en Loayza, no olvides llevar los envases vacíos de Eritropoyetina. ¿Tienes dudas?
+                                    </div>
+                                </div>
+                                <div class="relative border-t pt-2">
+                                    <input type="text" placeholder="Escribe aquí..." class="w-full bg-slate-50 border border-slate-200 rounded-full pl-3 pr-8 py-2 text-[11px] outline-none">
+                                    <button class="absolute right-3 top-4 text-indigo-600"><i class="fa-solid fa-paper-plane text-xs"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Navigation Bar -->
+                    <nav class="absolute bottom-0 w-full bg-white border-t border-slate-200 flex justify-around items-center px-2 py-2 rounded-b-[2.2rem] z-20 shadow-[0_-5px_15px_rgba(0,0,0,0.05)] pb-4">
+                        <button onclick="switchRoleTab('pac', 'inicio')" id="pbtn-inicio" class="pac-nav-btn text-indigo-600 flex flex-col items-center gap-1 w-1/5"><i class="fa-solid fa-qrcode text-lg"></i><span class="text-[9px] font-semibold">Inicio</span></button>
+                        <button onclick="switchRoleTab('pac', 'prep')" id="pbtn-prep" class="pac-nav-btn text-slate-400 hover:text-indigo-500 flex flex-col items-center gap-1 w-1/5"><i class="fa-solid fa-list-check text-lg"></i><span class="text-[9px] font-semibold">Prep</span></button>
+                        <button onclick="switchRoleTab('pac', 'resumen')" id="pbtn-resumen" class="pac-nav-btn text-slate-400 hover:text-indigo-500 flex flex-col items-center gap-1 w-1/5"><i class="fa-solid fa-notes-medical text-lg"></i><span class="text-[9px] font-semibold">Datos</span></button>
+                        <button onclick="switchRoleTab('pac', 'ruta')" id="pbtn-ruta" class="pac-nav-btn text-slate-400 hover:text-indigo-500 flex flex-col items-center gap-1 w-1/5"><i class="fa-solid fa-route text-lg"></i><span class="text-[9px] font-semibold">Ruta</span></button>
+                        <button onclick="switchRoleTab('pac', 'asistente')" id="pbtn-asistente" class="pac-nav-btn text-slate-400 hover:text-indigo-500 flex flex-col items-center gap-1 w-1/5"><i class="fa-solid fa-comment-medical text-lg"></i><span class="text-[9px] font-semibold">Ayuda</span></button>
+                    </nav>
+                </div>
+            </div>
+
+
+            <!-- ========================================================= -->
+            <!-- VISTAS DEL MÉDICO DE ADULTOS (M123456)                    -->
+            <!-- ========================================================= -->
+            <div id="med-workspace" class="hidden max-w-7xl mx-auto space-y-6 fade-in">
+                
+                <!-- Dashboard Referidos -->
+                <section id="med-dashboard" class="role-view space-y-4">
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                        <h2 class="font-bold text-slate-800 text-lg"><i class="fa-solid fa-users text-tealmed-600"></i> Mis Pacientes Referidos (Hosp. Loayza)</h2>
+                        <p class="text-xs text-slate-500 mt-1">Por protección de datos, la historia pediátrica permanece bloqueada. <strong>Escanee el código QR de la App del paciente</strong> para solicitar permiso y validarlo.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Patient Card: Blocked -->
+                        <div id="med-card-mateo" class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-4 relative overflow-hidden transition-all duration-500">
+                            <div class="absolute top-0 right-0 bg-amber-100 text-amber-800 text-[10px] font-bold px-3 py-1 rounded-bl-xl border-b border-l border-amber-200"><i class="fa-solid fa-lock"></i> HC Bloqueada</div>
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center text-xl"><i class="fa-solid fa-user-secret"></i></div>
+                                <div>
+                                    <h3 class="font-bold text-slate-800">P-101 (Mateo)</h3>
+                                    <p class="text-[11px] text-slate-500">Referido desde: INSN San Borja</p>
+                                </div>
+                            </div>
+                            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs text-center space-y-2">
+                                <p class="text-slate-600 font-medium">Requiere Token para habilitar Lakehouse.</p>
+                                <button onclick="simularEscaneoQR()" class="w-full bg-tealmed-600 hover:bg-tealmed-700 text-white font-bold py-2 rounded-lg shadow-sm transition"><i class="fa-solid fa-camera mr-1"></i> Escanear QR del Paciente (Pedir Permiso)</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Lakehouse -->
+                <section id="med-lakehouse" class="role-view hidden space-y-6">
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                        <h2 class="font-bold text-slate-800 text-lg"><i class="fa-solid fa-database text-tealmed-600"></i> Lakehouse Clínico</h2>
+                        <p class="text-xs text-slate-500">Repositorio cifrado de la historia pediátrica (Solo pacientes desbloqueados).</p>
+                    </div>
+                    <div class="bg-white rounded-2xl border border-slate-200 p-5 text-center text-slate-500 text-xs italic">
+                        Seleccione un paciente desbloqueado en el RAG para consultar la evidencia Capa Oro.
+                    </div>
+                </section>
+
+                <!-- RAG Asistente -->
+                <section id="med-rag" class="role-view hidden space-y-4">
+                    <div id="rag-locked-msg" class="bg-amber-50 border border-amber-200 p-4 rounded-xl text-amber-800 text-sm font-bold text-center">
+                        <i class="fa-solid fa-lock text-2xl mb-2 block"></i> Debe escanear un QR en "Mis Referidos" para activar la IA.
+                    </div>
+                    
+                    <div id="rag-interface" class="hidden bg-slate-900 rounded-2xl border border-slate-800 shadow-lg flex flex-col h-[600px] overflow-hidden">
+                        <div class="p-4 border-b border-slate-700 flex justify-between items-center text-white">
+                            <div>
+                                <h2 class="font-bold text-sm"><i class="fa-solid fa-robot text-tealmed-400"></i> Asistente RAG (Capa Oro)</h2>
+                                <p class="text-[10px] text-slate-400">Paciente: P-101 (Mateo) - Permiso Activo</p>
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="previewSummaryPDF()" class="bg-rose-900 hover:bg-rose-800 border border-rose-700 text-white text-[10px] px-2 py-1 rounded font-bold"><i class="fa-solid fa-file-pdf"></i> Ver PDF Oficial</button>
+                                <span class="bg-slate-700 text-[9px] px-2 py-1 rounded font-mono text-emerald-400 border border-slate-600">AUDITORÍA ACTIVA</span>
+                            </div>
+                        </div>
+                        <div class="flex-1 bg-slate-800/50 p-4 overflow-y-auto space-y-4 custom-scrollbar">
+                            <div class="flex gap-3">
+                                <div class="w-8 h-8 rounded bg-tealmed-600 text-white flex items-center justify-center shrink-0"><i class="fa-solid fa-robot"></i></div>
+                                <div class="bg-slate-700 text-white p-3 rounded-xl rounded-tl-none text-xs max-w-[80%] border border-slate-600">
+                                    Historia pediátrica desbloqueada e indexada. La última alergia registrada es <strong>Vancomicina</strong> (DOC-01). ¿Qué desea buscar?
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-3 bg-slate-800 border-t border-slate-700 flex gap-2">
+                            <input type="text" placeholder="Ej. ¿Cuándo fue su última cirugía?" class="flex-1 bg-slate-900 border border-slate-600 text-white rounded-xl px-3 text-xs outline-none focus:border-tealmed-500">
+                            <button onclick="showToast('RAG procesando...', 'info')" class="bg-tealmed-600 text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-tealmed-700"><i class="fa-solid fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- INGESTA COMPARTIDA (M7) - fuera de ped-workspace y med-workspace para que sea visible con ambos roles -->
+            <section id="shared-ingesta" class="hidden max-w-7xl mx-auto space-y-6 fade-in">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200">
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2">
+                            <i class="fa-solid fa-file-arrow-up text-brand-600"></i> Ingesta y Digitalización (M7)
+                        </h2>
+                        <p class="text-xs text-slate-500">Cargue documentos, procese con OCR y alimente el Lakehouse.</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                        <h3 class="font-semibold text-slate-800 text-sm border-b pb-2"><i class="fa-solid fa-upload"></i> Carga Institucional</h3>
+                        <div class="space-y-3 text-xs">
+                            <div><label class="font-bold">Paciente:</label><select class="w-full bg-slate-50 border p-2 rounded-lg"><option>P-101 (Mateo)</option></select></div>
+                            <div><label class="font-bold">Tipo Doc:</label><select class="w-full bg-slate-50 border p-2 rounded-lg"><option>Epicrisis</option><option>Nuevo Laboratorio (Adultos)</option></select></div>
+                            <input type="file" id="ing-file-input" accept="image/*,application/pdf" class="hidden" onchange="handleIngestaFile(this)">
+                            <div id="ing-dropzone" onclick="document.getElementById('ing-file-input').click()"
+                                 ondragover="event.preventDefault(); this.classList.add('border-brand-400','bg-brand-50');"
+                                 ondragleave="this.classList.remove('border-brand-400','bg-brand-50');"
+                                 ondrop="handleIngestaDrop(event)"
+                                 class="border-2 border-dashed border-slate-300 p-6 text-center rounded-xl bg-slate-50 cursor-pointer hover:border-brand-300 transition">
+                                <i class="fa-solid fa-cloud-arrow-up text-3xl text-slate-400 mb-2"></i><p>Adjuntar PDF o foto del informe<br><span class="text-[10px] text-slate-400">(o arrastra el archivo aquí)</span></p>
+                            </div>
+                            <p id="ing-file-name" class="text-[10px] font-bold text-brand-700 hidden"></p>
+                            <div class="bg-amber-50 p-3 rounded-xl border border-amber-200">
+                                <p class="text-[10px] font-bold text-amber-900 mb-1">Carga Rápida (Demo)</p>
+                                <button onclick="showToast('Plantilla cargada', 'info')" class="bg-white border border-amber-300 text-amber-900 text-[10px] px-2 py-1 rounded">📄 Usar Plantilla Fallot</button>
+                            </div>
+                            <button onclick="showToast('OCR Procesado a Capa Bronce', 'success')" class="w-full bg-brand-600 text-white font-bold py-2.5 rounded-xl">Procesar OCR</button>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                        <h3 class="font-semibold text-slate-800 text-sm border-b pb-2"><i class="fa-solid fa-pen-to-square"></i> Estudio OCR (Aprobación)</h3>
+                        <p class="text-[10px] text-slate-500">Valide el texto extraído antes de pasarlo a Capa Oro.</p>
+                        <textarea rows="8" class="w-full text-xs font-mono bg-slate-50 border rounded-lg p-2">[OCR SIMULADO] Paciente P-101. Diagnóstico ERC...</textarea>
+                        <button onclick="showToast('Aprobado a Capa Oro. Indexado para RAG.', 'success')" class="w-full bg-emerald-600 text-white font-bold py-2 rounded-xl">Aprobar a Capa Oro</button>
+                    </div>
+                </div>
+
+                <!-- Aportes del Paciente (Pendientes de validación) -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-3">
+                    <h3 class="font-semibold text-slate-800 text-sm border-b pb-2 flex items-center gap-2"><i class="fa-solid fa-user-clock text-amber-500"></i> Aportes del Paciente — Pendientes de Validación</h3>
+                    <p class="text-[10px] text-slate-500">Documentos que el paciente subió o redactó desde su app. Revíselos antes de sumarlos a la historia oficial.</p>
+                    <div id="ped-pending-docs" class="space-y-2"></div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- ================= MODALS ================= -->
+    <!-- Modal: QR Success (Adultos) -->
+    <div id="modal-qr-success" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-white rounded-3xl p-8 max-w-sm w-full text-center space-y-4 shadow-2xl border border-emerald-200">
+            <div class="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto text-emerald-600 text-4xl mb-2 animate-bounce"><i class="fa-solid fa-unlock-keyhole"></i></div>
+            <h2 class="text-xl font-bold text-slate-800">¡Referencia Validada!</h2>
+            <p class="text-xs text-slate-500">Usted ha obtenido permiso de lectura al Lakehouse Pediátrico de Mateo por 24 horas.</p>
+            <button onclick="closeModal('modal-qr-success'); switchRoleTab('med', 'rag');" class="w-full bg-emerald-600 text-white font-bold py-3 rounded-xl">Ir al Asistente RAG</button>
+        </div>
+    </div>
+
+    <!-- Modal: Subir Documento (Paciente) -->
+    <div id="modal-upload-doc" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm p-6 space-y-4 relative">
+            <button onclick="closeModal('modal-upload-doc')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-800"><i class="fa-solid fa-xmark"></i></button>
+            <div>
+                <h3 class="font-bold text-slate-800 text-sm">Subir Documento</h3>
+                <p class="text-[10px] text-slate-500">Se enviará a tu médico para validación antes de sumarse a tu historia.</p>
+            </div>
+
+            <div>
+                <label class="block text-[10px] font-bold text-slate-700 mb-1">Tipo de documento</label>
+                <select id="doc-tipo" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-lg p-2.5">
+                    <option>Receta médica</option>
+                    <option>Resultado de laboratorio</option>
+                    <option>Diagnóstico / Informe de cita</option>
+                    <option>Otro</option>
+                </select>
+            </div>
+
+            <!-- Mode switch -->
+            <div class="flex bg-slate-100 rounded-xl p-1 text-[10px] font-bold">
+                <button type="button" id="doc-mode-file-btn" onclick="setUploadMode('file')" class="flex-1 py-2 rounded-lg bg-white shadow-sm text-indigo-700"><i class="fa-solid fa-camera"></i> Foto / PDF</button>
+                <button type="button" id="doc-mode-text-btn" onclick="setUploadMode('text')" class="flex-1 py-2 rounded-lg text-slate-500"><i class="fa-solid fa-pen"></i> Redactar</button>
+            </div>
+
+            <!-- File mode -->
+            <div id="doc-mode-file">
+                <input type="file" id="doc-file-input" accept="image/*,application/pdf" class="hidden" onchange="handleFileSelected(this)">
+                <div id="doc-dropzone" onclick="document.getElementById('doc-file-input').click()"
+                     ondragover="event.preventDefault(); this.classList.add('border-indigo-400','bg-indigo-50');"
+                     ondragleave="this.classList.remove('border-indigo-400','bg-indigo-50');"
+                     ondrop="handleFileDrop(event)"
+                     class="border-2 border-dashed border-slate-300 rounded-xl p-6 text-center cursor-pointer hover:border-indigo-300 transition">
+                    <i class="fa-solid fa-cloud-arrow-up text-2xl text-slate-400 mb-1"></i>
+                    <p class="text-[10px] text-slate-500">Toca para tomar foto o subir un PDF<br>(o arrastra el archivo aquí)</p>
+                </div>
+                <div id="doc-file-preview" class="hidden mt-3 flex items-center gap-3 bg-slate-50 border border-slate-200 rounded-xl p-3">
+                    <img id="doc-file-thumb" class="hidden w-12 h-12 rounded-lg object-cover border" />
+                    <i id="doc-file-icon" class="fa-solid fa-file-pdf text-2xl text-rose-500 hidden"></i>
+                    <div class="flex-1 min-w-0">
+                        <p id="doc-file-name" class="text-xs font-bold text-slate-800 truncate"></p>
+                        <p class="text-[9px] text-slate-500">Listo para enviar</p>
+                    </div>
+                    <button type="button" onclick="clearFileSelection()" class="text-slate-400 hover:text-rose-600"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            </div>
+
+            <!-- Text mode -->
+            <div id="doc-mode-text" class="hidden">
+                <label class="block text-[10px] font-bold text-slate-700 mb-1">Escribe la información de tu cita</label>
+                <textarea id="doc-text-content" rows="5" placeholder="Ej. Me recetaron Furosemida 40mg cada 12 horas por 7 días..." class="w-full text-xs bg-slate-50 border border-slate-300 rounded-lg p-2.5"></textarea>
+            </div>
+
+            <button onclick="submitPatientDocument()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl shadow-sm">
+                <i class="fa-solid fa-paper-plane"></i> Enviar a validación
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal: PDF MINSA (Pediatra y Adultos) -->
+    <div id="modal-pdf-preview" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-white w-full max-w-4xl rounded-2xl shadow-2xl border border-slate-300 p-8 space-y-6 max-h-[90vh] overflow-y-auto custom-scrollbar print-modal-content relative">
+            <button onclick="closeModal('modal-pdf-preview')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-800 text-2xl no-print"><i class="fa-solid fa-xmark"></i></button>
+            <div class="flex items-center justify-between border-b border-slate-200 pb-4 no-print">
+                <div class="flex items-center space-x-2"><span class="bg-rose-100 text-rose-800 font-bold px-2.5 py-1 rounded-md text-xs border border-rose-200"><i class="fa-solid fa-file-pdf mr-1"></i> FORMATO OFICIAL MINSA</span><h3 class="text-sm font-bold text-slate-900">Hoja Clínica de Transición</h3></div>
+                <button onclick="window.print()" class="px-4 py-2 bg-brand-600 text-white text-xs font-semibold rounded-xl"><i class="fa-solid fa-print"></i> Imprimir Oficial</button>
+            </div>
+            <div id="pdf-content-body" class="space-y-5 text-slate-900 text-xs leading-relaxed bg-white p-4">
+                <div class="border-b-2 border-slate-900 pb-3 flex items-center justify-between">
+                    <div class="flex items-center space-x-3"><div class="w-10 h-10 bg-slate-100 border flex items-center justify-center font-bold text-lg"><i class="fa-solid fa-hospital-user"></i></div><div><h1 class="font-black text-slate-900 uppercase">MINSA / INSN SB</h1><h2>Programa Puente 18+</h2></div></div>
+                    <div class="text-right border-l-2 pl-4"><span class="font-extrabold text-xs">TR-2026-101</span><br><span class="text-[10px] text-slate-500">Fecha: <strong id="pdf-date"></strong></span></div>
+                </div>
+                <div id="pdf-patient-header" class="grid grid-cols-3 gap-2 bg-slate-50 p-3 rounded border text-[11px]"></div>
+                <div id="pdf-sections-grid" class="space-y-3"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= JAVASCRIPT ================= -->
+    <script>
+        // Core Logic & Routing
+        let currentRole = '';
+
+        function checkParentalControl(val) {
+            const field = document.getElementById('parental-control-field');
+            if(val.toUpperCase() === 'P123456') field.classList.remove('hidden');
+            else field.classList.add('hidden');
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const user = document.getElementById('login-user').value.toUpperCase();
+            const pass = document.getElementById('login-pass').value;
+            const parent = document.getElementById('login-parent-code').value.toUpperCase();
+
+            if(pass !== '123') { showToast('Password incorrecto (Use 123)', 'error'); return; }
+            if(user === 'P123456' && parent !== 'R123456') { showToast('Código Parental incorrecto (Use R123456)', 'error'); return; }
+
+            currentRole = user;
+            document.getElementById('login-view').classList.add('opacity-0');
+            setTimeout(() => {
+                document.getElementById('login-view').classList.add('hidden');
+                document.getElementById('app-shell').classList.remove('hidden');
+                setupWorkspace(user);
+            }, 500);
+        }
+
+        function setupWorkspace(user) {
+            const wPed = document.getElementById('ped-workspace');
+            const wMed = document.getElementById('med-workspace');
+            const wPac = document.getElementById('pac-workspace');
+            const tPed = document.getElementById('ped-tabs');
+            const tMed = document.getElementById('med-tabs');
+
+            [wPed, wMed, wPac, tPed, tMed].forEach(el => el.classList.add('hidden'));
+
+            if(user.startsWith('PED')) {
+                document.getElementById('user-name-display').innerText = "Dr. C. Torres (Pediatra)";
+                document.getElementById('role-badge').innerText = "INSN SB";
+                document.getElementById('role-icon').className = "fa-solid fa-user-doctor";
+                tPed.classList.remove('hidden'); wPed.classList.remove('hidden');
+                switchRoleTab('ped', 'tablero');
+                loadChecklistPediatra();
+                renderPendingDocsQueue();
+                updateChecklistLinkSummary();
+            } else if (user.startsWith('M')) {
+                document.getElementById('user-name-display').innerText = "Dr. Valdivia (M. Adultos)";
+                document.getElementById('role-badge').innerText = "HOSP. LOAYZA";
+                document.getElementById('role-badge').className = "bg-emerald-500/20 text-emerald-300 text-[10px] px-2 py-0.5 rounded border border-emerald-400/30";
+                document.getElementById('role-icon').className = "fa-solid fa-user-nurse";
+                tMed.classList.remove('hidden'); wMed.classList.remove('hidden');
+                switchRoleTab('med', 'dashboard');
+            } else if (user.startsWith('P')) {
+                document.getElementById('user-name-display').innerText = `Paciente Mateo`;
+                document.getElementById('role-badge').innerText = "APP MÓVIL";
+                document.getElementById('role-icon').className = "fa-solid fa-mobile-screen";
+                wPac.classList.remove('hidden');
+                switchRoleTab('pac', 'inicio');
+                populatePacChecklist();
+                renderPatientDocs();
+                renderAccessLog();
+            }
+        }
+
+        function switchRoleTab(rolePrefix, tabId) {
+            // Views
+            let viewsClass = rolePrefix === 'pac' ? '.pac-view' : '.role-view';
+            document.querySelectorAll(viewsClass).forEach(v => v.classList.add('hidden'));
+            document.getElementById('shared-ingesta').classList.add('hidden');
+
+            // Si es la Ingesta M7 (compartida), mostrarla
+            if(tabId === 'ingesta') {
+                document.getElementById('shared-ingesta').classList.remove('hidden');
+                renderPendingDocsQueue();
+            } else {
+                document.getElementById(`${rolePrefix === 'pac' ? 'pac-view' : rolePrefix}-${tabId}`).classList.remove('hidden');
+            }
+
+            // Tabs styling
+            if(rolePrefix !== 'pac') {
+                document.querySelectorAll('.role-nav-tab').forEach(b => {
+                    b.classList.remove('bg-insn-900', 'border-insn-600', 'text-white', 'bg-tealmed-800', 'border-tealmed-600');
+                    b.classList.add('text-slate-300');
+                });
+                const activeBtn = document.getElementById(`${rolePrefix}tab-${tabId}`);
+                if(activeBtn) {
+                    activeBtn.classList.remove('text-slate-300');
+                    activeBtn.classList.add('text-white', rolePrefix === 'ped' ? 'bg-insn-900' : 'bg-tealmed-800', 'border', rolePrefix === 'ped' ? 'border-insn-600' : 'border-tealmed-600');
+                }
+            } else {
+                document.querySelectorAll('.pac-nav-btn').forEach(b => { b.classList.remove('text-indigo-600'); b.classList.add('text-slate-400'); });
+                document.getElementById(`pbtn-${tabId}`).classList.remove('text-slate-400');
+                document.getElementById(`pbtn-${tabId}`).classList.add('text-indigo-600');
+            }
+        }
+
+        function logout() { window.location.reload(); }
+
+        // --- Mock Data & Pediatra Logic ---
+        const chkData = [
+            { dim: 'ENFERMEDAD', t: 'Conoce diagnóstico', s: 'GREEN' }, { dim: 'TRATAMIENTO', t: 'Sabe medicinas', s: 'AMBER' },
+            { dim: 'SISTEMA', t: 'Pide citas solo', s: 'RED' }, { dim: 'AUTONOMIA', t: 'Habla con doc sin padres', s: 'RED' }
+        ];
+
+        function loadChecklistPediatra() {
+            const list = document.getElementById('ped-chk-list');
+            if(list) list.innerHTML = chkData.map(i => `<div class="flex justify-between items-center p-3 bg-slate-50 border rounded-xl"><div><span class="text-[9px] bg-slate-200 px-1 rounded">${i.dim}</span><p class="text-xs font-bold">${i.t}</p></div><div class="flex gap-1"><button class="px-2 py-1 border rounded ${i.s==='RED'?'bg-rose-500 text-white':''}">R</button><button class="px-2 py-1 border rounded ${i.s==='AMBER'?'bg-amber-500 text-white':''}">A</button><button class="px-2 py-1 border rounded ${i.s==='GREEN'?'bg-emerald-500 text-white':''}">V</button></div></div>`).join('');
+        }
+
+        function populatePacChecklist() {
+            const list = document.getElementById('pac-read-chk');
+            if(list) list.innerHTML = chkData.map(i => `<div class="flex justify-between p-2 bg-white border rounded-lg shadow-sm"><span class="font-bold">${i.t}</span><span class="w-3 h-3 rounded-full ${i.s==='GREEN'?'bg-emerald-500':i.s==='AMBER'?'bg-amber-500':'bg-rose-500'}"></span></div>`).join('');
+        }
+
+        function addBitacoraLog() {
+            const tl = document.getElementById('bitacora-timeline');
+            const type = document.getElementById('bit-tipo').value;
+            const note = document.getElementById('bit-nota').value;
+            tl.innerHTML = `<div class="relative"><span class="absolute -left-7 top-1 w-3 h-3 rounded-full bg-insn-500 border-2 border-white ring-2 ring-insn-200"></span><h4 class="font-bold">${type}</h4><p class="text-slate-500">Hoy - ${note}</p></div>` + tl.innerHTML;
+            showToast('Añadido a Bitácora.', 'success');
+        }
+
+        // --- Resumen M4 & PDF ---
+        let patientSummaryMock = {
+            dx: "Enfermedad Renal Crónica Estadio V.", esp: "Nefrología Pediátrica", med: "Eritropoyetina 4000 UI, Furosemida 40mg",
+            aleTipo: "Alergia Confirmada", aleDet: "Vancomicina", hosp: "Fístula AV en 2024", cog: "Conservada", aut: "Autonomía Parcial",
+            edu: "Educación Regular", eduDet: "EBA Nocturna", fam: "Sólido", soc: "Pobre No Extremo", cob: "SIS Gratuito",
+            men: "Ansiedad reactiva", menDet: "Por traslado", dif: "Barrera Transporte", difDet: "Dificultad nocturna.",
+            disp: "Fístula arteriovenosa braquiocefálica (brazo izq.), catéter permanente de reserva.",
+            riesgos: "Riesgo de trombosis de FAV. Alerta: fiebre, dolor o pérdida de thrill en el sitio de fístula → acudir de inmediato.",
+            vacunas: "Esquema completo. Pendiente refuerzo Hepatitis B (dosis 4) por inmunosupresión.",
+            recos: "Control nefrológico cada 4 semanas. Monitorear función renal residual y parámetros de diálisis.",
+            cuidadorNombre: "María Elena Ríos", cuidadorRelacion: "Madre", cuidadorTelefono: "+51 987 654 321"
+        };
+
+        function loadPatientSummary() {
+            const sel = document.getElementById('summary-patient-select');
+            const val = sel ? sel.value : 'P-101';
+            const nombre = val === 'P-102' ? 'P-102 (Sofía) - Hematología' : 'P-101 (Mateo) - Nefrología';
+            const nameEl = document.getElementById('summary-patient-name-display');
+            if (nameEl) nameEl.innerText = nombre;
+            showToast(`Cargando resumen de ${val}...`, 'info');
+            updateChecklistLinkSummary();
+        }
+
+        function updateChecklistLinkSummary() {
+            const el = document.getElementById('sum-checklist-resumen');
+            if (!el || typeof chkData === 'undefined') return;
+            const total = chkData.length;
+            const verdes = chkData.filter(i => i.s === 'GREEN').length;
+            const pct = Math.round((verdes / total) * 100);
+            el.innerHTML = `<strong>${pct}%</strong> de competencias dominadas (${verdes}/${total} ítems en verde). Perfil asignado: <strong>B - Progresiva</strong>.`;
+        }
+
+        function previewSummaryPDF() {
+            document.getElementById('pdf-date').innerText = new Date().toLocaleDateString('es-PE');
+            document.getElementById('pdf-patient-header').innerHTML = `<div><strong>PACIENTE:</strong> P-101 (Mateo)</div><div><strong>EDAD:</strong> 17 Años</div><div><strong>ESPECIALIDAD:</strong> Nefrología</div><div><strong>RECEPTOR:</strong> Hosp. Loayza</div><div><strong>GESTOR:</strong> Lic. María Elena</div><div><strong>COBERTURA:</strong> SIS Gratuito</div>`;
+            document.getElementById('pdf-sections-grid').innerHTML = `
+                <div class="border p-2 bg-white"><strong>1. Diagnóstico:</strong> ${patientSummaryMock.dx}</div>
+                <div class="border p-2 bg-white"><strong>2. Especialistas:</strong> ${patientSummaryMock.esp}</div>
+                <div class="border p-2 bg-white"><strong>3. Medicamentos:</strong> ${patientSummaryMock.med}</div>
+                <div class="border p-2 bg-white"><strong>4. Alergias:</strong> ${patientSummaryMock.aleTipo} - ${patientSummaryMock.aleDet}</div>
+                <div class="border p-2 bg-white"><strong>5. Hospitalizaciones:</strong> ${patientSummaryMock.hosp}</div>
+                <div class="grid grid-cols-2 gap-2"><div class="border p-2 bg-white"><strong>6. Cognitiva:</strong> ${patientSummaryMock.cog}</div><div class="border p-2 bg-white"><strong>7. Autonomía:</strong> ${patientSummaryMock.aut}</div></div>
+                <div class="border p-2 bg-white"><strong>8. Educación:</strong> ${patientSummaryMock.edu} - ${patientSummaryMock.eduDet}</div>
+                <div class="grid grid-cols-2 gap-2"><div class="border p-2 bg-white"><strong>9. Apoyo Fam:</strong> ${patientSummaryMock.fam}</div><div class="border p-2 bg-white"><strong>10. Socioeconómico:</strong> ${patientSummaryMock.soc}</div></div>
+                <div class="border p-2 bg-white"><strong>11. Cobertura:</strong> ${patientSummaryMock.cob}</div>
+                <div class="border p-2 bg-white"><strong>12. Salud Mental:</strong> ${patientSummaryMock.men}</div>
+                <div class="border p-2 bg-white"><strong>13. Barreras:</strong> ${patientSummaryMock.dif}</div>
+                <div class="border p-2 bg-white"><strong>14. Dispositivos:</strong> ${patientSummaryMock.disp}</div>
+                <div class="border p-2 bg-white"><strong>15. Riesgos y Alertas:</strong> ${patientSummaryMock.riesgos}</div>
+                <div class="border p-2 bg-white"><strong>16. Vacunas:</strong> ${patientSummaryMock.vacunas}</div>
+                <div class="border p-2 bg-white bg-amber-50"><strong>17. Recomendaciones de Continuidad:</strong> ${patientSummaryMock.recos}</div>
+                <div class="border p-2 bg-white"><strong>18. Contacto Cuidador:</strong> ${patientSummaryMock.cuidadorNombre} (${patientSummaryMock.cuidadorRelacion}) - ${patientSummaryMock.cuidadorTelefono}</div>
+            `;
+            document.getElementById('modal-pdf-preview').classList.remove('hidden');
+        }
+        function saveClinicalSummary() { showToast('Resumen M4 guardado.', 'success'); }
+
+        // --- Bitácora de Accesos (vista Paciente) ---
+        let accessLog = [
+            { rol: 'Médico Adultos', nombre: 'Dr. Valdivia', accion: 'Consultó tu historial (Asistente IA)', fecha: '14/08/2026', hora: '18:20', icon: 'fa-user-doctor', color: 'sky' },
+            { rol: 'Pediatra', nombre: 'Dra. M. Torres', accion: 'Cargó un documento nuevo (Epicrisis)', fecha: '14/08/2026', hora: '17:45', icon: 'fa-user-doctor', color: 'indigo' },
+            { rol: 'Coordinador de Transición', nombre: 'Lic. R. Gómez', accion: 'Actualizó tu estado a "Cita otorgada"', fecha: '13/08/2026', hora: '11:02', icon: 'fa-user-tie', color: 'emerald' },
+            { rol: 'Médico Adultos', nombre: 'Dr. Valdivia', accion: 'Escaneó tu código QR (solicitó acceso)', fecha: '12/08/2026', hora: '09:15', icon: 'fa-qrcode', color: 'sky' }
+        ];
+
+        function renderAccessLog() {
+            const list = document.getElementById('pac-access-log');
+            if (!list) return;
+            const colorMap = { sky: 'bg-sky-50 text-sky-600', indigo: 'bg-indigo-50 text-indigo-600', emerald: 'bg-emerald-50 text-emerald-600' };
+            list.innerHTML = accessLog.map(a => `
+                <div class="bg-white border border-slate-200 rounded-xl p-3 flex items-start gap-3 shadow-sm">
+                    <div class="w-8 h-8 rounded-full ${colorMap[a.color]} flex items-center justify-center shrink-0"><i class="fa-solid ${a.icon}"></i></div>
+                    <div class="flex-1 min-w-0">
+                        <p class="font-bold text-slate-800">${a.nombre} <span class="font-normal text-slate-400">· ${a.rol}</span></p>
+                        <p class="text-slate-500">${a.accion}</p>
+                        <p class="text-slate-400 text-[9px] mt-0.5">${a.fecha} · ${a.hora}</p>
+                    </div>
+                    <i class="fa-solid fa-shield-halved text-emerald-500 mt-1"></i>
+                </div>`).join('');
+        }
+
+        // --- Módulo M7 Extendido: Documentos aportados por el paciente ---
+        let patientDocs = [
+            { id: 1, tipo: 'Receta médica', origen: 'archivo', nombre: 'receta_nefro_ago.jpg', estado: 'APROBADO' }
+        ];
+        let selectedFile = null; // { file, dataUrl (si es imagen), isImage }
+        let uploadMode = 'file';
+
+        function openUploadModal() {
+            clearFileSelection();
+            document.getElementById('doc-text-content').value = '';
+            setUploadMode('file');
+            document.getElementById('modal-upload-doc').classList.remove('hidden');
+        }
+
+        function setUploadMode(mode) {
+            uploadMode = mode;
+            const fileBtn = document.getElementById('doc-mode-file-btn');
+            const textBtn = document.getElementById('doc-mode-text-btn');
+            document.getElementById('doc-mode-file').classList.toggle('hidden', mode !== 'file');
+            document.getElementById('doc-mode-text').classList.toggle('hidden', mode !== 'text');
+            fileBtn.classList.toggle('bg-white', mode === 'file'); fileBtn.classList.toggle('shadow-sm', mode === 'file'); fileBtn.classList.toggle('text-indigo-700', mode === 'file'); fileBtn.classList.toggle('text-slate-500', mode !== 'file');
+            textBtn.classList.toggle('bg-white', mode === 'text'); textBtn.classList.toggle('shadow-sm', mode === 'text'); textBtn.classList.toggle('text-indigo-700', mode === 'text'); textBtn.classList.toggle('text-slate-500', mode !== 'text');
+        }
+
+        function handleFileSelected(input) {
+            if (input.files && input.files[0]) processSelectedFile(input.files[0]);
+        }
+
+        function handleFileDrop(e) {
+            e.preventDefault();
+            e.currentTarget.classList.remove('border-indigo-400', 'bg-indigo-50');
+            if (e.dataTransfer.files && e.dataTransfer.files[0]) processSelectedFile(e.dataTransfer.files[0]);
+        }
+
+        function processSelectedFile(file) {
+            const isImage = file.type.startsWith('image/');
+            selectedFile = { file, isImage };
+            document.getElementById('doc-file-preview').classList.remove('hidden');
+            document.getElementById('doc-file-name').innerText = file.name;
+            if (isImage) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const thumb = document.getElementById('doc-file-thumb');
+                    thumb.src = e.target.result;
+                    thumb.classList.remove('hidden');
+                    document.getElementById('doc-file-icon').classList.add('hidden');
+                };
+                reader.readAsDataURL(file);
+            } else {
+                document.getElementById('doc-file-thumb').classList.add('hidden');
+                document.getElementById('doc-file-icon').classList.remove('hidden');
+            }
+        }
+
+        function clearFileSelection() {
+            selectedFile = null;
+            document.getElementById('doc-file-input').value = '';
+            document.getElementById('doc-file-preview').classList.add('hidden');
+        }
+
+        function submitPatientDocument() {
+            const tipo = document.getElementById('doc-tipo').value;
+            if (uploadMode === 'file') {
+                if (!selectedFile) { showToast('Selecciona una foto o PDF primero.', 'error'); return; }
+                patientDocs.unshift({ id: Date.now(), tipo, origen: 'archivo', nombre: selectedFile.file.name, estado: 'PENDIENTE' });
+            } else {
+                const texto = document.getElementById('doc-text-content').value.trim();
+                if (!texto) { showToast('Escribe la información antes de enviar.', 'error'); return; }
+                patientDocs.unshift({ id: Date.now(), tipo, origen: 'texto', nombre: texto.slice(0, 40) + (texto.length > 40 ? '…' : ''), estado: 'PENDIENTE' });
+            }
+            closeModal('modal-upload-doc');
+            renderPatientDocs();
+            renderPendingDocsQueue();
+            showToast('Documento enviado. Tu médico lo validará.', 'success');
+        }
+
+        function renderPatientDocs() {
+            const list = document.getElementById('pac-doc-list');
+            if (!list) return;
+            if (patientDocs.length === 0) { list.innerHTML = '<p class="text-slate-400 italic text-center py-2">Aún no has subido documentos.</p>'; return; }
+            list.innerHTML = patientDocs.map(d => {
+                const badge = d.estado === 'PENDIENTE'
+                    ? '<span class="bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full font-bold">Pendiente</span>'
+                    : '<span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-bold">Validado</span>';
+                const icon = d.origen === 'texto' ? 'fa-pen' : 'fa-file-lines';
+                return `<div class="bg-white border border-slate-200 rounded-xl p-3 flex items-center gap-3 shadow-sm">
+                    <i class="fa-solid ${icon} text-indigo-400"></i>
+                    <div class="flex-1 min-w-0"><p class="font-bold text-slate-800 truncate">${d.tipo}</p><p class="text-slate-500 truncate">${d.nombre}</p></div>
+                    ${badge}
+                </div>`;
+            }).join('');
+        }
+
+        // Bandeja de validación para el Pediatra (dentro de M7)
+        function renderPendingDocsQueue() {
+            const cont = document.getElementById('ped-pending-docs');
+            if (!cont) return;
+            const pendientes = patientDocs.filter(d => d.estado === 'PENDIENTE');
+            if (pendientes.length === 0) { cont.innerHTML = '<p class="text-slate-400 italic text-center py-3">No hay aportes de pacientes pendientes.</p>'; return; }
+            cont.innerHTML = pendientes.map(d => `
+                <div class="bg-white border border-amber-200 rounded-xl p-3 flex items-center gap-3 shadow-sm">
+                    <i class="fa-solid ${d.origen === 'texto' ? 'fa-pen' : 'fa-file-lines'} text-amber-500"></i>
+                    <div class="flex-1 min-w-0"><p class="font-bold text-slate-800 text-xs truncate">${d.tipo} — P-101 (Mateo)</p><p class="text-[10px] text-slate-500 truncate">${d.nombre}</p></div>
+                    <button onclick="resolvePendingDoc(${d.id}, true)" class="bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-bold px-2 py-1.5 rounded-lg"><i class="fa-solid fa-check"></i> Aprobar</button>
+                    <button onclick="resolvePendingDoc(${d.id}, false)" class="bg-slate-100 hover:bg-rose-100 text-slate-500 hover:text-rose-700 text-[10px] font-bold px-2 py-1.5 rounded-lg"><i class="fa-solid fa-xmark"></i></button>
+                </div>`).join('');
+        }
+
+        function resolvePendingDoc(id, approve) {
+            if (approve) {
+                const doc = patientDocs.find(d => d.id === id);
+                if (doc) doc.estado = 'APROBADO';
+                showToast('Aportado a Capa Oro. Indexado para RAG.', 'success');
+            } else {
+                patientDocs = patientDocs.filter(d => d.id !== id);
+                showToast('Documento rechazado.', 'info');
+            }
+            renderPendingDocsQueue();
+            renderPatientDocs();
+        }
+
+        // --- Medico Adultos Logic ---
+        function simularEscaneoQR() {
+            showToast('Simulando cámara... Escaneando código de Mateo', 'info');
+            setTimeout(() => {
+                document.getElementById('modal-qr-success').classList.remove('hidden');
+                // Desbloqueo Visual
+                const card = document.getElementById('med-card-mateo');
+                card.classList.replace('border-slate-200', 'border-emerald-300');
+                card.classList.add('ring-2', 'ring-emerald-100');
+                card.innerHTML = `<div class="absolute top-0 right-0 bg-emerald-100 text-emerald-800 text-[10px] font-bold px-3 py-1 rounded-bl-xl border-b border-l"><i class="fa-solid fa-lock-open"></i> HC Accesible</div><div class="flex items-center gap-3"><div class="w-12 h-12 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl border border-emerald-200"><i class="fa-solid fa-user-check"></i></div><div><h3 class="font-bold text-slate-800">P-101 (Mateo)</h3><p class="text-[11px] text-slate-500">Consentimiento Validado: Hoy</p></div></div><button onclick="switchRoleTab('med', 'rag')" class="w-full mt-3 bg-slate-800 hover:bg-slate-900 text-white font-bold py-2 rounded-lg"><i class="fa-solid fa-robot text-tealmed-400"></i> Consultar RAG Clínico</button>`;
+                
+                // Activar RAG
+                document.getElementById('rag-locked-msg').classList.add('hidden');
+                document.getElementById('rag-interface').classList.remove('hidden');
+            }, 1000);
+        }
+
+        function handleIngestaFile(input) {
+            if (input.files && input.files[0]) showIngestaFileName(input.files[0].name);
+        }
+        function handleIngestaDrop(e) {
+            e.preventDefault();
+            e.currentTarget.classList.remove('border-brand-400', 'bg-brand-50');
+            if (e.dataTransfer.files && e.dataTransfer.files[0]) showIngestaFileName(e.dataTransfer.files[0].name);
+        }
+        function showIngestaFileName(name) {
+            const el = document.getElementById('ing-file-name');
+            el.innerText = `📎 ${name}`;
+            el.classList.remove('hidden');
+        }
+
+        // Utils
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+        function showToast(msg, type='info') {
+            const cont = document.getElementById('toastContainer');
+            const t = document.createElement('div');
+            t.className = `px-4 py-3 rounded-xl shadow-lg border text-xs font-semibold text-white fade-in z-50 ${type==='success'?'bg-emerald-800 border-emerald-600':type==='error'?'bg-rose-800 border-rose-600':'bg-slate-800 border-slate-600'}`;
+            t.innerHTML = `<i class="fa-solid fa-info-circle mr-2"></i> ${msg}`;
+            cont.appendChild(t);
+            setTimeout(() => t.remove(), 3000);
+        }
+    </script>
+</body>
+</html>
