@@ -37,10 +37,22 @@
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         .pulse-ring { animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite; }
         @keyframes pulse-ring { 0% { transform: scale(0.8); box-shadow: 0 0 0 0 rgba(13, 148, 136, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(13, 148, 136, 0); } 100% { transform: scale(0.8); box-shadow: 0 0 0 0 rgba(13, 148, 136, 0); } }
-        .fade-in { animation: fadeIn 0.3s ease-in-out; forwards; }
+        .fade-in { animation: fadeIn 0.3s ease-in-out forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Chat & Upload Animations */
+        .chat-bubble-in { animation: chatBubbleIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+        @keyframes chatBubbleIn { from { opacity: 0; transform: translateY(8px) scale(0.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        .typing-dots span { display: inline-block; width: 6px; height: 6px; margin: 0 1.5px; border-radius: 9999px; background: currentColor; animation: typingBounce 1.4s infinite ease-in-out both; }
+        .typing-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dots span:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes typingBounce { 0%, 80%, 100% { transform: scale(0.6); opacity: 0.5; } 40% { transform: scale(1); opacity: 1; } }
+        .upload-progress-bar { transition: width 0.15s linear; }
+        .dropzone-active { transform: scale(1.015); box-shadow: 0 8px 20px -8px rgba(79, 70, 229, 0.35); }
+        .pop-check { animation: popCheck 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+        @keyframes popCheck { 0% { transform: scale(0); opacity: 0; } 60% { transform: scale(1.15); opacity: 1; } 100% { transform: scale(1); } }
         
         /* Print Styles for PDF */
         .print-area { display: none; }
@@ -187,19 +199,26 @@
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                         <div class="bg-slate-100 rounded-xl p-3 border border-slate-200 min-h-[400px]">
-                            <h3 class="text-xs font-bold text-slate-600 mb-3 border-b border-slate-200 pb-2">1. EN PREPARACIÓN</h3>
+                            <h3 class="text-xs font-bold text-slate-600 mb-3 border-b border-slate-200 pb-2">1. EN PREPARACIÓN <span class="text-slate-400 font-normal">(4)</span></h3>
                             <div class="bg-white p-3 rounded-lg border border-l-4 border-l-brand-500 shadow-sm text-xs font-bold">P-101 (Mateo)<br><span class="text-[9px] font-normal text-slate-500">Checklist: 68% | Perfil B</span></div>
                             <div class="bg-white p-3 rounded-lg border border-l-4 border-l-brand-500 shadow-sm text-xs font-bold mt-2">P-103 (Carlos)<br><span class="text-[9px] font-normal text-slate-500">Checklist: 35%</span></div>
+                            <div class="bg-white p-3 rounded-lg border border-l-4 border-l-brand-500 shadow-sm text-xs font-bold mt-2">P-104 (Lucía)<br><span class="text-[9px] font-normal text-slate-500">Checklist: 22% | Perfil C</span></div>
+                            <div class="bg-white p-3 rounded-lg border border-l-4 border-l-brand-500 shadow-sm text-xs font-bold mt-2">P-107 (Jhon)<br><span class="text-[9px] font-normal text-slate-500">Checklist: 50% | Perfil A</span></div>
                         </div>
                         <div class="bg-indigo-50 rounded-xl p-3 border border-indigo-100 min-h-[400px]">
-                            <h3 class="text-xs font-bold text-indigo-800 mb-3 border-b border-indigo-200 pb-2">2. REFERIDO</h3>
+                            <h3 class="text-xs font-bold text-indigo-800 mb-3 border-b border-indigo-200 pb-2">2. REFERIDO <span class="text-indigo-400 font-normal">(2)</span></h3>
+                            <div class="bg-white p-3 rounded-lg border border-l-4 border-l-indigo-500 shadow-sm text-xs font-bold">P-105 (Valeria)<br><span class="text-[9px] font-normal text-slate-500">Hosp. Rebagliati - Endocrinología</span></div>
+                            <div class="bg-white p-3 rounded-lg border border-l-4 border-l-indigo-500 shadow-sm text-xs font-bold mt-2">P-108 (Diego)<br><span class="text-[9px] font-normal text-slate-500">Hosp. Loayza - Cardiología</span></div>
                         </div>
                         <div class="bg-amber-50 rounded-xl p-3 border border-amber-100 min-h-[400px]">
-                            <h3 class="text-xs font-bold text-amber-800 mb-3 border-b border-amber-200 pb-2">3. CITA OTORGADA (QR)</h3>
+                            <h3 class="text-xs font-bold text-amber-800 mb-3 border-b border-amber-200 pb-2">3. CITA OTORGADA (QR) <span class="text-amber-400 font-normal">(2)</span></h3>
                             <div class="bg-white p-3 rounded-lg border border-l-4 border-l-amber-500 shadow-sm text-xs font-bold">P-102 (Sofía)<br><span class="text-[9px] font-normal text-slate-500">Hosp. Dos de Mayo</span></div>
+                            <div class="bg-white p-3 rounded-lg border border-l-4 border-l-amber-500 shadow-sm text-xs font-bold mt-2">P-106 (Ana)<br><span class="text-[9px] font-normal text-slate-500">Hosp. Rebagliati</span></div>
                         </div>
                         <div class="bg-emerald-50 rounded-xl p-3 border border-emerald-100 min-h-[400px]">
-                            <h3 class="text-xs font-bold text-emerald-800 mb-3 border-b border-emerald-200 pb-2">4. ATENDIDO EN ADULTOS</h3>
+                            <h3 class="text-xs font-bold text-emerald-800 mb-3 border-b border-emerald-200 pb-2">4. ATENDIDO EN ADULTOS <span class="text-emerald-400 font-normal">(2)</span></h3>
+                            <div class="bg-white p-3 rounded-lg border border-l-4 border-l-emerald-500 shadow-sm text-xs font-bold">P-109 (Renzo)<br><span class="text-[9px] font-normal text-slate-500">1ra atención: hace 2 semanas</span></div>
+                            <div class="bg-white p-3 rounded-lg border border-l-4 border-l-emerald-500 shadow-sm text-xs font-bold mt-2">P-110 (Camila)<br><span class="text-[9px] font-normal text-slate-500">Control de seguimiento OK</span></div>
                         </div>
                     </div>
                 </section>
@@ -499,6 +518,8 @@
                             <div class="space-y-2">
                                 <div class="p-3 border rounded-xl bg-slate-50 flex justify-between items-center"><div><p class="font-bold text-xs text-slate-800">Hospital Loayza</p><p class="text-[10px] text-emerald-600">Nefrología Adultos</p></div><span class="bg-emerald-100 text-emerald-800 text-[9px] px-2 py-1 rounded font-bold">Disponible</span></div>
                                 <div class="p-3 border rounded-xl bg-slate-50 flex justify-between items-center"><div><p class="font-bold text-xs text-slate-800">Hospital Dos de Mayo</p><p class="text-[10px] text-emerald-600">Hematología Adultos</p></div><span class="bg-emerald-100 text-emerald-800 text-[9px] px-2 py-1 rounded font-bold">Disponible</span></div>
+                                <div class="p-3 border rounded-xl bg-slate-50 flex justify-between items-center"><div><p class="font-bold text-xs text-slate-800">Hospital Rebagliati</p><p class="text-[10px] text-emerald-600">Endocrinología Adultos</p></div><span class="bg-emerald-100 text-emerald-800 text-[9px] px-2 py-1 rounded font-bold">Disponible</span></div>
+                                <div class="p-3 border rounded-xl bg-slate-50 flex justify-between items-center"><div><p class="font-bold text-xs text-slate-800">Hospital Almenara</p><p class="text-[10px] text-amber-600">Cardiología Adultos</p></div><span class="bg-amber-100 text-amber-800 text-[9px] px-2 py-1 rounded font-bold">Lista de Espera</span></div>
                             </div>
                         </div>
                         <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-4">
@@ -532,6 +553,9 @@
                             <div id="bitacora-timeline" class="space-y-4 relative before:absolute before:inset-0 before:left-2 before:w-0.5 before:bg-slate-200 pl-6 text-xs">
                                 <div class="relative"><span class="absolute -left-7 top-1 w-3 h-3 rounded-full bg-insn-500 border-2 border-white ring-2 ring-insn-200"></span><h4 class="font-bold">Llamada a Familia</h4><p class="text-slate-500">Ayer - Madre confirma interés en transición.</p></div>
                                 <div class="relative"><span class="absolute -left-7 top-1 w-3 h-3 rounded-full bg-insn-500 border-2 border-white ring-2 ring-insn-200"></span><h4 class="font-bold">Evaluación</h4><p class="text-slate-500">Hace 3 días - Completó 68% del Checklist.</p></div>
+                                <div class="relative"><span class="absolute -left-7 top-1 w-3 h-3 rounded-full bg-emerald-500 border-2 border-white ring-2 ring-emerald-200"></span><h4 class="font-bold">Coordinación Hospital</h4><p class="text-slate-500">Hace 5 días - Hospital Loayza confirma cupo en Nefrología Adultos.</p></div>
+                                <div class="relative"><span class="absolute -left-7 top-1 w-3 h-3 rounded-full bg-amber-500 border-2 border-white ring-2 ring-amber-200"></span><h4 class="font-bold">Trabajo Social</h4><p class="text-slate-500">Hace 8 días - Evaluación socioeconómica actualizada (Pobre No Extremo).</p></div>
+                                <div class="relative"><span class="absolute -left-7 top-1 w-3 h-3 rounded-full bg-insn-500 border-2 border-white ring-2 ring-insn-200"></span><h4 class="font-bold">Llamada a Familia</h4><p class="text-slate-500">Hace 12 días - Se explicó el proceso de transición a la madre.</p></div>
                             </div>
                         </div>
                     </div>
@@ -658,16 +682,18 @@
                                 <div class="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center"><i class="fa-solid fa-robot"></i></div>
                                 <div><h3 class="font-bold text-xs text-indigo-900">Asistente Puente</h3><p class="text-[9px] text-indigo-600">Basado en tus datos</p></div>
                             </div>
-                            <div class="flex-1 bg-white rounded-xl border border-slate-200 p-3 flex flex-col justify-end space-y-3 shadow-inner">
-                                <div class="flex gap-2">
-                                    <div class="w-6 h-6 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center text-[10px] shrink-0"><i class="fa-solid fa-robot"></i></div>
-                                    <div class="bg-slate-100 rounded-lg rounded-tl-none p-2 text-[11px] text-slate-700">
-                                        ¡Hola Mateo! Recuerda que mañana te toca Hemodiálisis. Para tu cita del día 20 en Loayza, no olvides llevar los envases vacíos de Eritropoyetina. ¿Tienes dudas?
+                            <div class="flex-1 bg-white rounded-xl border border-slate-200 p-3 flex flex-col shadow-inner overflow-hidden">
+                                <div id="pac-chat-list" class="flex-1 overflow-y-auto custom-scrollbar space-y-3 pr-1">
+                                    <div class="flex gap-2 chat-bubble-in">
+                                        <div class="w-6 h-6 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center text-[10px] shrink-0"><i class="fa-solid fa-robot"></i></div>
+                                        <div class="bg-slate-100 rounded-lg rounded-tl-none p-2 text-[11px] text-slate-700 max-w-[80%]">
+                                            ¡Hola Mateo! Recuerda que mañana te toca Hemodiálisis. Para tu cita del día 20 en Loayza, no olvides llevar los envases vacíos de Eritropoyetina. ¿Tienes dudas?
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="relative border-t pt-2">
-                                    <input type="text" placeholder="Escribe aquí..." class="w-full bg-slate-50 border border-slate-200 rounded-full pl-3 pr-8 py-2 text-[11px] outline-none">
-                                    <button class="absolute right-3 top-4 text-indigo-600"><i class="fa-solid fa-paper-plane text-xs"></i></button>
+                                <div class="relative border-t pt-2 mt-2 shrink-0">
+                                    <input type="text" id="pac-chat-input" onkeypress="if(event.key==='Enter') sendPacMessage()" placeholder="Escribe aquí..." class="w-full bg-slate-50 border border-slate-200 rounded-full pl-3 pr-8 py-2 text-[11px] outline-none focus:border-indigo-400 transition">
+                                    <button onclick="sendPacMessage()" class="absolute right-3 top-4 text-indigo-600 hover:scale-110 active:scale-90 transition-transform"><i class="fa-solid fa-paper-plane text-xs"></i></button>
                                 </div>
                             </div>
                         </div>
@@ -710,7 +736,37 @@
                             </div>
                             <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs text-center space-y-2">
                                 <p class="text-slate-600 font-medium">Requiere Token para habilitar Lakehouse.</p>
-                                <button onclick="simularEscaneoQR()" class="w-full bg-tealmed-600 hover:bg-tealmed-700 text-white font-bold py-2 rounded-lg shadow-sm transition"><i class="fa-solid fa-camera mr-1"></i> Escanear QR del Paciente (Pedir Permiso)</button>
+                                <button onclick="simularEscaneoQR('med-card-mateo','Mateo','P-101')" class="w-full bg-tealmed-600 hover:bg-tealmed-700 text-white font-bold py-2 rounded-lg shadow-sm transition"><i class="fa-solid fa-camera mr-1"></i> Escanear QR del Paciente (Pedir Permiso)</button>
+                            </div>
+                        </div>
+                        <!-- Patient Card: Blocked (Ana) -->
+                        <div id="med-card-ana" class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-4 relative overflow-hidden transition-all duration-500">
+                            <div class="absolute top-0 right-0 bg-amber-100 text-amber-800 text-[10px] font-bold px-3 py-1 rounded-bl-xl border-b border-l border-amber-200"><i class="fa-solid fa-lock"></i> HC Bloqueada</div>
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center text-xl"><i class="fa-solid fa-user-secret"></i></div>
+                                <div>
+                                    <h3 class="font-bold text-slate-800">P-106 (Ana)</h3>
+                                    <p class="text-[11px] text-slate-500">Referido desde: INSN San Borja</p>
+                                </div>
+                            </div>
+                            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs text-center space-y-2">
+                                <p class="text-slate-600 font-medium">Requiere Token para habilitar Lakehouse.</p>
+                                <button onclick="simularEscaneoQR('med-card-ana','Ana','P-106')" class="w-full bg-tealmed-600 hover:bg-tealmed-700 text-white font-bold py-2 rounded-lg shadow-sm transition"><i class="fa-solid fa-camera mr-1"></i> Escanear QR del Paciente (Pedir Permiso)</button>
+                            </div>
+                        </div>
+                        <!-- Patient Card: Blocked (Diego) -->
+                        <div id="med-card-diego" class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-4 relative overflow-hidden transition-all duration-500">
+                            <div class="absolute top-0 right-0 bg-amber-100 text-amber-800 text-[10px] font-bold px-3 py-1 rounded-bl-xl border-b border-l border-amber-200"><i class="fa-solid fa-lock"></i> HC Bloqueada</div>
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center text-xl"><i class="fa-solid fa-user-secret"></i></div>
+                                <div>
+                                    <h3 class="font-bold text-slate-800">P-108 (Diego)</h3>
+                                    <p class="text-[11px] text-slate-500">Referido desde: INSN San Borja</p>
+                                </div>
+                            </div>
+                            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs text-center space-y-2">
+                                <p class="text-slate-600 font-medium">Requiere Token para habilitar Lakehouse.</p>
+                                <button onclick="simularEscaneoQR('med-card-diego','Diego','P-108')" class="w-full bg-tealmed-600 hover:bg-tealmed-700 text-white font-bold py-2 rounded-lg shadow-sm transition"><i class="fa-solid fa-camera mr-1"></i> Escanear QR del Paciente (Pedir Permiso)</button>
                             </div>
                         </div>
                     </div>
@@ -737,15 +793,15 @@
                         <div class="p-4 border-b border-slate-700 flex justify-between items-center text-white">
                             <div>
                                 <h2 class="font-bold text-sm"><i class="fa-solid fa-robot text-tealmed-400"></i> Asistente RAG (Capa Oro)</h2>
-                                <p class="text-[10px] text-slate-400">Paciente: P-101 (Mateo) - Permiso Activo</p>
+                                <p id="rag-patient-label" class="text-[10px] text-slate-400">Paciente: P-101 (Mateo) - Permiso Activo</p>
                             </div>
                             <div class="flex gap-2">
                                 <button onclick="previewSummaryPDF()" class="bg-rose-900 hover:bg-rose-800 border border-rose-700 text-white text-[10px] px-2 py-1 rounded font-bold"><i class="fa-solid fa-file-pdf"></i> Ver PDF Oficial</button>
                                 <span class="bg-slate-700 text-[9px] px-2 py-1 rounded font-mono text-emerald-400 border border-slate-600">AUDITORÍA ACTIVA</span>
                             </div>
                         </div>
-                        <div class="flex-1 bg-slate-800/50 p-4 overflow-y-auto space-y-4 custom-scrollbar">
-                            <div class="flex gap-3">
+                        <div id="med-chat-list" class="flex-1 bg-slate-800/50 p-4 overflow-y-auto space-y-4 custom-scrollbar">
+                            <div class="flex gap-3 chat-bubble-in">
                                 <div class="w-8 h-8 rounded bg-tealmed-600 text-white flex items-center justify-center shrink-0"><i class="fa-solid fa-robot"></i></div>
                                 <div class="bg-slate-700 text-white p-3 rounded-xl rounded-tl-none text-xs max-w-[80%] border border-slate-600">
                                     Historia pediátrica desbloqueada e indexada. La última alergia registrada es <strong>Vancomicina</strong> (DOC-01). ¿Qué desea buscar?
@@ -753,8 +809,8 @@
                             </div>
                         </div>
                         <div class="p-3 bg-slate-800 border-t border-slate-700 flex gap-2">
-                            <input type="text" placeholder="Ej. ¿Cuándo fue su última cirugía?" class="flex-1 bg-slate-900 border border-slate-600 text-white rounded-xl px-3 text-xs outline-none focus:border-tealmed-500">
-                            <button onclick="showToast('RAG procesando...', 'info')" class="bg-tealmed-600 text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-tealmed-700"><i class="fa-solid fa-paper-plane"></i></button>
+                            <input type="text" id="med-chat-input" onkeypress="if(event.key==='Enter') sendMedRagMessage()" placeholder="Ej. ¿Cuándo fue su última cirugía?" class="flex-1 bg-slate-900 border border-slate-600 text-white rounded-xl px-3 text-xs outline-none focus:border-tealmed-500 transition">
+                            <button onclick="sendMedRagMessage()" class="bg-tealmed-600 text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-tealmed-700 hover:scale-105 active:scale-95 transition-transform"><i class="fa-solid fa-paper-plane"></i></button>
                         </div>
                     </div>
                 </section>
@@ -778,10 +834,10 @@
                             <div><label class="font-bold">Tipo Doc:</label><select class="w-full bg-slate-50 border p-2 rounded-lg"><option>Epicrisis</option><option>Nuevo Laboratorio (Adultos)</option></select></div>
                             <input type="file" id="ing-file-input" accept="image/*,application/pdf" class="hidden" onchange="handleIngestaFile(this)">
                             <div id="ing-dropzone" onclick="document.getElementById('ing-file-input').click()"
-                                 ondragover="event.preventDefault(); this.classList.add('border-brand-400','bg-brand-50');"
-                                 ondragleave="this.classList.remove('border-brand-400','bg-brand-50');"
+                                 ondragover="event.preventDefault(); this.classList.add('border-brand-400','bg-brand-50','dropzone-active');"
+                                 ondragleave="this.classList.remove('border-brand-400','bg-brand-50','dropzone-active');"
                                  ondrop="handleIngestaDrop(event)"
-                                 class="border-2 border-dashed border-slate-300 p-6 text-center rounded-xl bg-slate-50 cursor-pointer hover:border-brand-300 transition">
+                                 class="border-2 border-dashed border-slate-300 p-6 text-center rounded-xl bg-slate-50 cursor-pointer hover:border-brand-300 transition-all duration-200">
                                 <i class="fa-solid fa-cloud-arrow-up text-3xl text-slate-400 mb-2"></i><p>Adjuntar PDF o foto del informe<br><span class="text-[10px] text-slate-400">(o arrastra el archivo aquí)</span></p>
                             </div>
                             <p id="ing-file-name" class="text-[10px] font-bold text-brand-700 hidden"></p>
@@ -789,7 +845,7 @@
                                 <p class="text-[10px] font-bold text-amber-900 mb-1">Carga Rápida (Demo)</p>
                                 <button onclick="showToast('Plantilla cargada', 'info')" class="bg-white border border-amber-300 text-amber-900 text-[10px] px-2 py-1 rounded">📄 Usar Plantilla Fallot</button>
                             </div>
-                            <button onclick="showToast('OCR Procesado a Capa Bronce', 'success')" class="w-full bg-brand-600 text-white font-bold py-2.5 rounded-xl">Procesar OCR</button>
+                            <button id="ocr-process-btn" onclick="procesarOCR()" class="w-full bg-brand-600 text-white font-bold py-2.5 rounded-xl transition disabled:opacity-70">Procesar OCR</button>
                         </div>
                     </div>
                     <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
@@ -817,7 +873,7 @@
         <div class="bg-white rounded-3xl p-8 max-w-sm w-full text-center space-y-4 shadow-2xl border border-emerald-200">
             <div class="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto text-emerald-600 text-4xl mb-2 animate-bounce"><i class="fa-solid fa-unlock-keyhole"></i></div>
             <h2 class="text-xl font-bold text-slate-800">¡Referencia Validada!</h2>
-            <p class="text-xs text-slate-500">Usted ha obtenido permiso de lectura al Lakehouse Pediátrico de Mateo por 24 horas.</p>
+            <p id="qr-success-desc" class="text-xs text-slate-500">Usted ha obtenido permiso de lectura al Lakehouse Pediátrico de Mateo por 24 horas.</p>
             <button onclick="closeModal('modal-qr-success'); switchRoleTab('med', 'rag');" class="w-full bg-emerald-600 text-white font-bold py-3 rounded-xl">Ir al Asistente RAG</button>
         </div>
     </div>
@@ -851,10 +907,10 @@
             <div id="doc-mode-file">
                 <input type="file" id="doc-file-input" accept="image/*,application/pdf" class="hidden" onchange="handleFileSelected(this)">
                 <div id="doc-dropzone" onclick="document.getElementById('doc-file-input').click()"
-                     ondragover="event.preventDefault(); this.classList.add('border-indigo-400','bg-indigo-50');"
-                     ondragleave="this.classList.remove('border-indigo-400','bg-indigo-50');"
+                     ondragover="event.preventDefault(); this.classList.add('border-indigo-400','bg-indigo-50','dropzone-active');"
+                     ondragleave="this.classList.remove('border-indigo-400','bg-indigo-50','dropzone-active');"
                      ondrop="handleFileDrop(event)"
-                     class="border-2 border-dashed border-slate-300 rounded-xl p-6 text-center cursor-pointer hover:border-indigo-300 transition">
+                     class="border-2 border-dashed border-slate-300 rounded-xl p-6 text-center cursor-pointer hover:border-indigo-300 transition-all duration-200">
                     <i class="fa-solid fa-cloud-arrow-up text-2xl text-slate-400 mb-1"></i>
                     <p class="text-[10px] text-slate-500">Toca para tomar foto o subir un PDF<br>(o arrastra el archivo aquí)</p>
                 </div>
@@ -875,8 +931,14 @@
                 <textarea id="doc-text-content" rows="5" placeholder="Ej. Me recetaron Furosemida 40mg cada 12 horas por 7 días..." class="w-full text-xs bg-slate-50 border border-slate-300 rounded-lg p-2.5"></textarea>
             </div>
 
-            <button onclick="submitPatientDocument()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl shadow-sm">
-                <i class="fa-solid fa-paper-plane"></i> Enviar a validación
+            <div id="upload-progress-wrap" class="hidden space-y-1">
+                <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+                    <div id="upload-progress-bar" class="upload-progress-bar bg-indigo-600 h-2 rounded-full" style="width:0%"></div>
+                </div>
+                <p class="text-[9px] text-slate-500 text-center">Subiendo documento de forma cifrada...</p>
+            </div>
+            <button id="upload-submit-btn" onclick="submitPatientDocument()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl shadow-sm transition disabled:opacity-70">
+                <span id="upload-submit-label"><i class="fa-solid fa-paper-plane"></i> Enviar a validación</span>
             </button>
         </div>
     </div>
@@ -1002,8 +1064,11 @@
 
         // --- Mock Data & Pediatra Logic ---
         const chkData = [
-            { dim: 'ENFERMEDAD', t: 'Conoce diagnóstico', s: 'GREEN' }, { dim: 'TRATAMIENTO', t: 'Sabe medicinas', s: 'AMBER' },
-            { dim: 'SISTEMA', t: 'Pide citas solo', s: 'RED' }, { dim: 'AUTONOMIA', t: 'Habla con doc sin padres', s: 'RED' }
+            { dim: 'ENFERMEDAD', t: 'Conoce diagnóstico', s: 'GREEN' }, { dim: 'ENFERMEDAD', t: 'Explica su condición con sus palabras', s: 'GREEN' },
+            { dim: 'TRATAMIENTO', t: 'Sabe medicinas', s: 'AMBER' }, { dim: 'TRATAMIENTO', t: 'Reconoce efectos secundarios', s: 'AMBER' },
+            { dim: 'SISTEMA', t: 'Pide citas solo', s: 'RED' }, { dim: 'SISTEMA', t: 'Conoce su seguro/cobertura', s: 'AMBER' },
+            { dim: 'AUTONOMIA', t: 'Habla con doc sin padres', s: 'RED' }, { dim: 'AUTONOMIA', t: 'Administra su medicación diaria', s: 'AMBER' },
+            { dim: 'RED DE APOYO', t: 'Identifica a quién llamar en emergencia', s: 'GREEN' }, { dim: 'RED DE APOYO', t: 'Conoce a su nuevo médico receptor', s: 'RED' }
         ];
 
         function loadChecklistPediatra() {
@@ -1086,7 +1151,11 @@
             { rol: 'Médico Adultos', nombre: 'Dr. Valdivia', accion: 'Consultó tu historial (Asistente IA)', fecha: '14/08/2026', hora: '18:20', icon: 'fa-user-doctor', color: 'sky' },
             { rol: 'Pediatra', nombre: 'Dra. M. Torres', accion: 'Cargó un documento nuevo (Epicrisis)', fecha: '14/08/2026', hora: '17:45', icon: 'fa-user-doctor', color: 'indigo' },
             { rol: 'Coordinador de Transición', nombre: 'Lic. R. Gómez', accion: 'Actualizó tu estado a "Cita otorgada"', fecha: '13/08/2026', hora: '11:02', icon: 'fa-user-tie', color: 'emerald' },
-            { rol: 'Médico Adultos', nombre: 'Dr. Valdivia', accion: 'Escaneó tu código QR (solicitó acceso)', fecha: '12/08/2026', hora: '09:15', icon: 'fa-qrcode', color: 'sky' }
+            { rol: 'Médico Adultos', nombre: 'Dr. Valdivia', accion: 'Escaneó tu código QR (solicitó acceso)', fecha: '12/08/2026', hora: '09:15', icon: 'fa-qrcode', color: 'sky' },
+            { rol: 'Trabajo Social', nombre: 'Lic. P. Ramos', accion: 'Actualizó tu clasificación socioeconómica', fecha: '10/08/2026', hora: '15:30', icon: 'fa-user-tie', color: 'emerald' },
+            { rol: 'Pediatra', nombre: 'Dra. M. Torres', accion: 'Guardó el Resumen Clínico de Transición (M4)', fecha: '09/08/2026', hora: '10:12', icon: 'fa-user-doctor', color: 'indigo' },
+            { rol: 'Coordinador de Transición', nombre: 'Lic. R. Gómez', accion: 'Confirmó cupo en Hospital Loayza', fecha: '08/08/2026', hora: '16:48', icon: 'fa-user-tie', color: 'emerald' },
+            { rol: 'Sistema', nombre: 'Plataforma Puente 18+', accion: 'Generó tu código QR de consentimiento', fecha: '07/08/2026', hora: '09:00', icon: 'fa-qrcode', color: 'sky' }
         ];
 
         function renderAccessLog() {
@@ -1107,7 +1176,10 @@
 
         // --- Módulo M7 Extendido: Documentos aportados por el paciente ---
         let patientDocs = [
-            { id: 1, tipo: 'Receta médica', origen: 'archivo', nombre: 'receta_nefro_ago.jpg', estado: 'APROBADO' }
+            { id: 1, tipo: 'Receta médica', origen: 'archivo', nombre: 'receta_nefro_ago.jpg', estado: 'APROBADO' },
+            { id: 2, tipo: 'Resultado de laboratorio', origen: 'archivo', nombre: 'lab_creatinina_jul.pdf', estado: 'APROBADO' },
+            { id: 3, tipo: 'Diagnóstico / Informe de cita', origen: 'texto', nombre: 'Control de julio: función renal estable, sin cambios en esquema...', estado: 'APROBADO' },
+            { id: 4, tipo: 'Receta médica', origen: 'archivo', nombre: 'receta_furosemida_ago.jpg', estado: 'PENDIENTE' }
         ];
         let selectedFile = null; // { file, dataUrl (si es imagen), isImage }
         let uploadMode = 'file';
@@ -1135,14 +1207,16 @@
 
         function handleFileDrop(e) {
             e.preventDefault();
-            e.currentTarget.classList.remove('border-indigo-400', 'bg-indigo-50');
+            e.currentTarget.classList.remove('border-indigo-400', 'bg-indigo-50', 'dropzone-active');
             if (e.dataTransfer.files && e.dataTransfer.files[0]) processSelectedFile(e.dataTransfer.files[0]);
         }
 
         function processSelectedFile(file) {
             const isImage = file.type.startsWith('image/');
             selectedFile = { file, isImage };
-            document.getElementById('doc-file-preview').classList.remove('hidden');
+            const preview = document.getElementById('doc-file-preview');
+            preview.classList.remove('hidden');
+            preview.classList.remove('fade-in'); void preview.offsetWidth; preview.classList.add('fade-in');
             document.getElementById('doc-file-name').innerText = file.name;
             if (isImage) {
                 const reader = new FileReader();
@@ -1167,18 +1241,134 @@
 
         function submitPatientDocument() {
             const tipo = document.getElementById('doc-tipo').value;
+            let texto = '';
             if (uploadMode === 'file') {
                 if (!selectedFile) { showToast('Selecciona una foto o PDF primero.', 'error'); return; }
-                patientDocs.unshift({ id: Date.now(), tipo, origen: 'archivo', nombre: selectedFile.file.name, estado: 'PENDIENTE' });
             } else {
-                const texto = document.getElementById('doc-text-content').value.trim();
+                texto = document.getElementById('doc-text-content').value.trim();
                 if (!texto) { showToast('Escribe la información antes de enviar.', 'error'); return; }
-                patientDocs.unshift({ id: Date.now(), tipo, origen: 'texto', nombre: texto.slice(0, 40) + (texto.length > 40 ? '…' : ''), estado: 'PENDIENTE' });
             }
-            closeModal('modal-upload-doc');
-            renderPatientDocs();
-            renderPendingDocsQueue();
-            showToast('Documento enviado. Tu médico lo validará.', 'success');
+
+            const btn = document.getElementById('upload-submit-btn');
+            const label = document.getElementById('upload-submit-label');
+            const progressWrap = document.getElementById('upload-progress-wrap');
+            const progressBar = document.getElementById('upload-progress-bar');
+
+            btn.disabled = true;
+            label.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Enviando...';
+            progressWrap.classList.remove('hidden');
+            progressBar.style.width = '0%';
+
+            let pct = 0;
+            const interval = setInterval(() => {
+                pct = Math.min(pct + Math.random() * 25 + 10, 100);
+                progressBar.style.width = pct + '%';
+                if (pct >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        if (uploadMode === 'file') {
+                            patientDocs.unshift({ id: Date.now(), tipo, origen: 'archivo', nombre: selectedFile.file.name, estado: 'PENDIENTE' });
+                        } else {
+                            patientDocs.unshift({ id: Date.now(), tipo, origen: 'texto', nombre: texto.slice(0, 40) + (texto.length > 40 ? '…' : ''), estado: 'PENDIENTE' });
+                        }
+                        btn.disabled = false;
+                        label.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Enviar a validación';
+                        progressWrap.classList.add('hidden');
+                        closeModal('modal-upload-doc');
+                        renderPatientDocs();
+                        renderPendingDocsQueue();
+                        showToast('Documento enviado. Tu médico lo validará.', 'success');
+                    }, 300);
+                }
+            }, 150);
+        }
+
+        // --- Chatbot: Asistente Paciente y RAG Médico ---
+        const pacChatReplies = [
+            { k: ['cita', 'fecha'], r: 'Tu próxima cita es el 20/08/2026 en Nefrología Adultos, Hospital Loayza, Consultorio 21B con el Dr. Valdivia.' },
+            { k: ['medicamento', 'medicina', 'pastilla'], r: 'Actualmente tomas Eritropoyetina 4000 UI y Furosemida 40mg. No olvides llevar los envases vacíos a tu próxima cita.' },
+            { k: ['alergia'], r: 'Tienes registrada una alergia severa a Vancomicina. Coméntalo siempre antes de cualquier procedimiento nuevo.' },
+            { k: ['dialisis', 'diálisis', 'hemodialisis', 'hemodiálisis'], r: 'Tu sesión de Hemodiálisis está programada para mañana. Recuerda no exceder tu ingesta de líquidos.' },
+            { k: ['qr', 'codigo', 'código'], r: 'Tu código QR es personal. Solo tú decides qué médico puede escanearlo, y puedes desconectarlo cuando quieras desde "Datos".' }
+        ];
+        function getPacReply(text) {
+            const low = text.toLowerCase();
+            const match = pacChatReplies.find(item => item.k.some(k => low.includes(k)));
+            return match ? match.r : 'Gracias por tu mensaje. Lo registré; tu equipo de coordinación lo revisará si necesita seguimiento clínico.';
+        }
+
+        const medRagReplies = [
+            { k: ['cirugia', 'cirugía', 'operacion', 'operación'], r: 'Última cirugía registrada: colocación de Fístula arteriovenosa braquiocefálica (brazo izquierdo) en 2024 (DOC-04).' },
+            { k: ['alergia'], r: 'Alergia confirmada a Vancomicina (RAM Severa), registrada en DOC-01. Verificar epicrisis para el detalle de la reacción.' },
+            { k: ['medicamento', 'tratamiento', 'farmac'], r: 'Esquema activo: Eritropoyetina 4000 UI y Furosemida 40mg. Última calibración registrada en el último control de Nefrología.' },
+            { k: ['riesgo', 'alerta'], r: 'Riesgo principal: trombosis de FAV. Señales de alerta: fiebre, dolor o pérdida de thrill en el sitio de fístula.' },
+            { k: ['vacuna'], r: 'Esquema de vacunación completo, pendiente refuerzo de Hepatitis B (dosis 4) por inmunosupresión.' }
+        ];
+        function getMedRagReply(text) {
+            const low = text.toLowerCase();
+            const match = medRagReplies.find(item => item.k.some(k => low.includes(k)));
+            return match ? match.r : 'No encontré una coincidencia exacta en la Capa Oro indexada. Intente con "cirugía", "alergia", "medicamento", "riesgo" o "vacuna".';
+        }
+
+        function appendChatMessage(containerId, text, sender, opts = {}) {
+            const list = document.getElementById(containerId);
+            const isUser = sender === 'user';
+            const wrap = document.createElement('div');
+            wrap.className = `flex gap-2 chat-bubble-in ${isUser ? 'justify-end' : ''}`;
+            if (opts.dark) {
+                wrap.innerHTML = isUser
+                    ? `<div class="bg-tealmed-600 text-white p-3 rounded-xl rounded-tr-none text-xs max-w-[80%]">${text}</div>`
+                    : `<div class="w-8 h-8 rounded bg-tealmed-600 text-white flex items-center justify-center shrink-0"><i class="fa-solid fa-robot"></i></div><div class="bg-slate-700 text-white p-3 rounded-xl rounded-tl-none text-xs max-w-[80%] border border-slate-600">${text}</div>`;
+            } else {
+                wrap.innerHTML = isUser
+                    ? `<div class="bg-indigo-600 text-white rounded-lg rounded-tr-none p-2 text-[11px] max-w-[80%]">${text}</div>`
+                    : `<div class="w-6 h-6 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center text-[10px] shrink-0"><i class="fa-solid fa-robot"></i></div><div class="bg-slate-100 rounded-lg rounded-tl-none p-2 text-[11px] text-slate-700 max-w-[80%]">${text}</div>`;
+            }
+            list.appendChild(wrap);
+            list.scrollTop = list.scrollHeight;
+        }
+
+        function showTypingIndicator(containerId, opts = {}) {
+            const list = document.getElementById(containerId);
+            const wrap = document.createElement('div');
+            wrap.className = 'flex gap-2 chat-bubble-in';
+            wrap.id = containerId + '-typing';
+            const bubbleClass = opts.dark ? 'bg-slate-700 border border-slate-600 text-tealmed-300' : 'bg-slate-100 text-slate-500';
+            const iconWrap = opts.dark ? 'w-8 h-8 rounded bg-tealmed-600 text-white' : 'w-6 h-6 rounded-full bg-slate-200 text-slate-600 text-[10px]';
+            wrap.innerHTML = `<div class="${iconWrap} flex items-center justify-center shrink-0"><i class="fa-solid fa-robot"></i></div><div class="${bubbleClass} rounded-lg rounded-tl-none px-3 py-2.5 flex items-center typing-dots"><span></span><span></span><span></span></div>`;
+            list.appendChild(wrap);
+            list.scrollTop = list.scrollHeight;
+        }
+
+        function removeTypingIndicator(containerId) {
+            const el = document.getElementById(containerId + '-typing');
+            if (el) el.remove();
+        }
+
+        function sendPacMessage() {
+            const input = document.getElementById('pac-chat-input');
+            const text = input.value.trim();
+            if (!text) return;
+            appendChatMessage('pac-chat-list', text, 'user');
+            input.value = '';
+            showTypingIndicator('pac-chat-list');
+            setTimeout(() => {
+                removeTypingIndicator('pac-chat-list');
+                appendChatMessage('pac-chat-list', getPacReply(text), 'bot');
+            }, 900 + Math.random() * 700);
+        }
+
+        function sendMedRagMessage() {
+            const input = document.getElementById('med-chat-input');
+            const text = input.value.trim();
+            if (!text) return;
+            appendChatMessage('med-chat-list', text, 'user', { dark: true });
+            input.value = '';
+            showTypingIndicator('med-chat-list', { dark: true });
+            setTimeout(() => {
+                removeTypingIndicator('med-chat-list');
+                appendChatMessage('med-chat-list', getMedRagReply(text), 'bot', { dark: true });
+            }, 900 + Math.random() * 700);
         }
 
         function renderPatientDocs() {
@@ -1227,19 +1417,22 @@
         }
 
         // --- Medico Adultos Logic ---
-        function simularEscaneoQR() {
-            showToast('Simulando cámara... Escaneando código de Mateo', 'info');
+        function simularEscaneoQR(cardId, nombre, codigo) {
+            cardId = cardId || 'med-card-mateo'; nombre = nombre || 'Mateo'; codigo = codigo || 'P-101';
+            showToast(`Simulando cámara... Escaneando código de ${nombre}`, 'info');
             setTimeout(() => {
+                document.getElementById('qr-success-desc').innerText = `Usted ha obtenido permiso de lectura al Lakehouse Pediátrico de ${nombre} por 24 horas.`;
                 document.getElementById('modal-qr-success').classList.remove('hidden');
                 // Desbloqueo Visual
-                const card = document.getElementById('med-card-mateo');
+                const card = document.getElementById(cardId);
                 card.classList.replace('border-slate-200', 'border-emerald-300');
                 card.classList.add('ring-2', 'ring-emerald-100');
-                card.innerHTML = `<div class="absolute top-0 right-0 bg-emerald-100 text-emerald-800 text-[10px] font-bold px-3 py-1 rounded-bl-xl border-b border-l"><i class="fa-solid fa-lock-open"></i> HC Accesible</div><div class="flex items-center gap-3"><div class="w-12 h-12 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl border border-emerald-200"><i class="fa-solid fa-user-check"></i></div><div><h3 class="font-bold text-slate-800">P-101 (Mateo)</h3><p class="text-[11px] text-slate-500">Consentimiento Validado: Hoy</p></div></div><button onclick="switchRoleTab('med', 'rag')" class="w-full mt-3 bg-slate-800 hover:bg-slate-900 text-white font-bold py-2 rounded-lg"><i class="fa-solid fa-robot text-tealmed-400"></i> Consultar RAG Clínico</button>`;
-                
+                card.innerHTML = `<div class="absolute top-0 right-0 bg-emerald-100 text-emerald-800 text-[10px] font-bold px-3 py-1 rounded-bl-xl border-b border-l"><i class="fa-solid fa-lock-open"></i> HC Accesible</div><div class="flex items-center gap-3"><div class="w-12 h-12 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl border border-emerald-200"><i class="fa-solid fa-user-check"></i></div><div><h3 class="font-bold text-slate-800">${codigo} (${nombre})</h3><p class="text-[11px] text-slate-500">Consentimiento Validado: Hoy</p></div></div><button onclick="switchRoleTab('med', 'rag')" class="w-full mt-3 bg-slate-800 hover:bg-slate-900 text-white font-bold py-2 rounded-lg"><i class="fa-solid fa-robot text-tealmed-400"></i> Consultar RAG Clínico</button>`;
+
                 // Activar RAG
                 document.getElementById('rag-locked-msg').classList.add('hidden');
                 document.getElementById('rag-interface').classList.remove('hidden');
+                document.getElementById('rag-patient-label').innerText = `Paciente: ${codigo} (${nombre}) - Permiso Activo`;
             }, 1000);
         }
 
@@ -1248,13 +1441,26 @@
         }
         function handleIngestaDrop(e) {
             e.preventDefault();
-            e.currentTarget.classList.remove('border-brand-400', 'bg-brand-50');
+            e.currentTarget.classList.remove('border-brand-400', 'bg-brand-50', 'dropzone-active');
             if (e.dataTransfer.files && e.dataTransfer.files[0]) showIngestaFileName(e.dataTransfer.files[0].name);
         }
         function showIngestaFileName(name) {
             const el = document.getElementById('ing-file-name');
             el.innerText = `📎 ${name}`;
             el.classList.remove('hidden');
+        }
+
+        function procesarOCR() {
+            const btn = document.getElementById('ocr-process-btn');
+            if (btn.disabled) return;
+            btn.disabled = true;
+            const original = btn.innerText;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Procesando OCR...';
+            setTimeout(() => {
+                btn.disabled = false;
+                btn.innerText = original;
+                showToast('OCR Procesado a Capa Bronce', 'success');
+            }, 1400);
         }
 
         // Utils
