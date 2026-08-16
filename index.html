@@ -241,6 +241,10 @@
                             </select>
                         </div>
                     </div>
+                    <div class="bg-indigo-50 border border-indigo-200 rounded-xl p-3 flex items-start gap-2 text-[10px] text-indigo-900">
+                        <i class="fa-solid fa-scale-balanced mt-0.5 text-indigo-600"></i>
+                        <p><strong>Criterio de edad INSN SB:</strong> se considera paciente pediátrico hasta los <strong>17 años, 11 meses y 29 días</strong>; la transición a servicios de adultos es obligatoria al cumplir 18 (mayoría de edad, Art. 42° Código Civil / Ley N° 27337). <em>Supuesto de trabajo del prototipo — ajustar si la institución define un corte distinto.</em></p>
+                    </div>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-4">
                             <h3 class="font-bold text-sm border-b pb-2">Categorización Perfil</h3>
@@ -250,6 +254,7 @@
                                 <option value="C">Perfil C: Multidisciplinaria</option>
                             </select>
                             <div class="bg-sky-50 text-sky-800 text-[10px] p-2 rounded border border-sky-200">Asignar Perfil B habilita el Control Parental en la App del Paciente.</div>
+                            <div class="bg-amber-50 text-amber-800 text-[10px] p-2 rounded border border-amber-200"><i class="fa-solid fa-brain"></i> Regla activa: si el paciente presenta compromiso cognitivo (Módulo 4, campo 6), el Perfil se reasigna automáticamente a <strong>C</strong>.</div>
                         </div>
                         <div class="md:col-span-2 bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-4">
                             <h3 class="font-bold text-sm border-b pb-2">22 Ítems de Madurez</h3>
@@ -348,7 +353,7 @@
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
                                 <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/60 space-y-2">
                                     <label class="block text-xs font-bold text-slate-800">6. Capacidad Cognitiva <span class="text-rose-500">*</span></label>
-                                    <select id="sum-cognitiva" class="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 font-medium text-slate-700">
+                                    <select id="sum-cognitiva" onchange="evaluateCognitiveRule()" class="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 font-medium text-slate-700">
                                         <option value="Conservada / Típica para la edad">Conservada / Típica para la edad cronológica</option>
                                         <option value="Compromiso Leve (Comprende instrucciones simples)">Compromiso Leve (Comprende instrucciones simples)</option>
                                         <option value="Compromiso Moderado (Requiere adaptación constante)">Compromiso Moderado (Requiere apoyo continuo)</option>
@@ -374,6 +379,18 @@
                                         <option value="Inserción Laboral / Técnico Formativo">Inserción Laboral / Técnico Formativo</option>
                                     </select>
                                     <input type="text" id="sum-educativas-detalle" class="w-full text-xs p-2 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500" placeholder="Detalle grado académico, adaptaciones o metas...">
+                                </div>
+                            </div>
+                            <div id="cognitive-rule-alert" class="hidden fade-in bg-amber-50 border border-amber-300 rounded-xl p-4 flex items-start gap-3">
+                                <i class="fa-solid fa-triangle-exclamation text-amber-600 text-lg mt-0.5"></i>
+                                <div class="text-xs text-amber-900 space-y-1">
+                                    <p class="font-bold">Regla clínica: Trastorno / compromiso cognitivo detectado</p>
+                                    <p>Este paciente no puede transitar por la vía estándar de autonomía progresiva. Se aplican automáticamente:</p>
+                                    <ul class="list-disc list-inside space-y-0.5">
+                                        <li><strong>Perfil C (Multidisciplinaria)</strong> asignado en el Módulo 3 — requiere equipo de Psicología/Trabajo Social en la transferencia.</li>
+                                        <li><strong>Representante o cuidador se mantiene activo</strong> más allá de los 18 años (apoyos y salvaguardias, D.L. 1384), no solo mientras dure el Control Parental por minoría de edad.</li>
+                                        <li>El servicio receptor de adultos debe ser notificado explícitamente de esta condición antes de la primera cita.</li>
+                                    </ul>
                                 </div>
                             </div>
                         </div>
@@ -1009,6 +1026,7 @@
                 loadChecklistPediatra();
                 renderPendingDocsQueue();
                 updateChecklistLinkSummary();
+                evaluateCognitiveRule();
             } else if (user.startsWith('M')) {
                 document.getElementById('user-name-display').innerText = "Dr. Valdivia (M. Adultos)";
                 document.getElementById('role-badge').innerText = "HOSP. LOAYZA";
@@ -1110,6 +1128,28 @@
             if (nameEl) nameEl.innerText = nombre;
             showToast(`Cargando resumen de ${val}...`, 'info');
             updateChecklistLinkSummary();
+            evaluateCognitiveRule();
+        }
+
+        // --- Regla: trastorno/compromiso cognitivo condiciona la fase de preparación ---
+        function evaluateCognitiveRule() {
+            const sel = document.getElementById('sum-cognitiva');
+            const alertBox = document.getElementById('cognitive-rule-alert');
+            const perfilSel = document.getElementById('ped-chk-perfil');
+            if (!sel || !alertBox) return;
+
+            const hasCognitiveDisorder = sel.value !== 'Conservada / Típica para la edad';
+
+            if (hasCognitiveDisorder) {
+                alertBox.classList.remove('hidden');
+                alertBox.classList.remove('fade-in'); void alertBox.offsetWidth; alertBox.classList.add('fade-in');
+                if (perfilSel && perfilSel.value !== 'C') {
+                    perfilSel.value = 'C';
+                    showToast('Compromiso cognitivo detectado: Perfil reasignado a C (Multidisciplinaria).', 'info');
+                }
+            } else {
+                alertBox.classList.add('hidden');
+            }
         }
 
         function updateChecklistLinkSummary() {
