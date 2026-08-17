@@ -49,7 +49,6 @@
         .typing-dots span:nth-child(1) { animation-delay: -0.32s; }
         .typing-dots span:nth-child(2) { animation-delay: -0.16s; }
         @keyframes typingBounce { 0%, 80%, 100% { transform: scale(0.6); opacity: 0.5; } 40% { transform: scale(1); opacity: 1; } }
-        .upload-progress-bar { transition: width 0.15s linear; }
         .dropzone-active { transform: scale(1.015); box-shadow: 0 8px 20px -8px rgba(79, 70, 229, 0.35); }
         .pop-check { animation: popCheck 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
         @keyframes popCheck { 0% { transform: scale(0); opacity: 0; } 60% { transform: scale(1.15); opacity: 1; } 100% { transform: scale(1); } }
@@ -653,9 +652,9 @@
                             <!-- Mis Documentos -->
                             <div class="flex items-center justify-between pt-2">
                                 <h3 class="font-bold text-slate-800 text-sm">Mis Documentos</h3>
-                                <button onclick="openUploadModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-[10px] font-bold px-3 py-1.5 rounded-lg shadow-sm flex items-center gap-1"><i class="fa-solid fa-plus"></i> Subir</button>
+                                <span class="bg-slate-100 text-slate-500 text-[9px] font-bold px-2 py-1 rounded-full border border-slate-200 flex items-center gap-1"><i class="fa-solid fa-lock"></i> Solo lectura</span>
                             </div>
-                            <p class="text-[10px] text-slate-500 -mt-2">Sube tus recetas, resultados o indicaciones de cada cita. Tu médico las revisará antes de incluirlas en tu historia.</p>
+                            <p class="text-[10px] text-slate-500 -mt-2">Aquí puedes consultar los documentos de tu historia. Solo tu equipo médico puede agregarlos o modificarlos.</p>
                             <div id="pac-doc-list" class="space-y-2 text-[10px]">
                                 <!-- JS Populated -->
                             </div>
@@ -689,6 +688,28 @@
                                     <h4 class="text-xs font-bold text-amber-700">3. Primera Cita (Pendiente)</h4>
                                     <p class="text-[10px] text-slate-500 mb-1">20/08/2026 - Presentarse en admisión adultos.</p>
                                     <button onclick="switchRoleTab('pac', 'inicio')" class="text-[9px] bg-indigo-50 text-indigo-700 px-2 py-1 rounded border border-indigo-200 font-bold"><i class="fa-solid fa-qrcode"></i> Abrir QR de Consentimiento</button>
+                                </div>
+                            </div>
+
+                            <!-- Asistente de Traslado (chatbot acotado al proceso de transferencia) -->
+                            <div class="pt-4 border-t border-slate-200">
+                                <div class="bg-teal-50 border border-teal-100 p-3 rounded-xl flex items-center gap-3 shadow-sm mb-3">
+                                    <div class="w-8 h-8 rounded-full bg-teal-600 text-white flex items-center justify-center"><i class="fa-solid fa-route"></i></div>
+                                    <div><h3 class="font-bold text-xs text-teal-900">Asistente de Traslado</h3><p class="text-[9px] text-teal-700">Te acompaño en tu paso al hospital de adultos</p></div>
+                                </div>
+                                <div class="bg-white rounded-xl border border-slate-200 shadow-inner flex flex-col h-[280px] overflow-hidden">
+                                    <div id="ruta-chat-list" class="flex-1 overflow-y-auto custom-scrollbar space-y-3 p-3">
+                                        <div class="flex gap-2 chat-bubble-in">
+                                            <div class="w-6 h-6 rounded-full bg-teal-100 text-teal-700 flex items-center justify-center text-[10px] shrink-0"><i class="fa-solid fa-route"></i></div>
+                                            <div class="bg-slate-100 rounded-lg rounded-tl-none p-2 text-[11px] text-slate-700 max-w-[80%]">
+                                                ¡Hola Mateo! Soy tu guía para el traslado al Hospital Loayza. Pregúntame cómo llegar, qué llevar a tu primera cita, o cómo es pasar a un servicio de adultos. Estoy aquí solo para acompañarte en este paso.
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="relative border-t pt-2 px-2 pb-2 shrink-0">
+                                        <input type="text" id="ruta-chat-input" onkeypress="if(event.key==='Enter') sendRutaMessage()" placeholder="Ej. ¿Cómo llego? ¿Qué llevo?" class="w-full bg-slate-50 border border-slate-200 rounded-full pl-3 pr-8 py-2 text-[11px] outline-none focus:border-teal-400 transition">
+                                        <button onclick="sendRutaMessage()" class="absolute right-4 top-4 text-teal-600 hover:scale-110 active:scale-90 transition-transform"><i class="fa-solid fa-paper-plane text-xs"></i></button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -892,71 +913,6 @@
             <h2 class="text-xl font-bold text-slate-800">¡Referencia Validada!</h2>
             <p id="qr-success-desc" class="text-xs text-slate-500">Usted ha obtenido permiso de lectura al Lakehouse Pediátrico de Mateo por 24 horas.</p>
             <button onclick="closeModal('modal-qr-success'); switchRoleTab('med', 'rag');" class="w-full bg-emerald-600 text-white font-bold py-3 rounded-xl">Ir al Asistente RAG</button>
-        </div>
-    </div>
-
-    <!-- Modal: Subir Documento (Paciente) -->
-    <div id="modal-upload-doc" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
-        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm p-6 space-y-4 relative">
-            <button onclick="closeModal('modal-upload-doc')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-800"><i class="fa-solid fa-xmark"></i></button>
-            <div>
-                <h3 class="font-bold text-slate-800 text-sm">Subir Documento</h3>
-                <p class="text-[10px] text-slate-500">Se enviará a tu médico para validación antes de sumarse a tu historia.</p>
-            </div>
-
-            <div>
-                <label class="block text-[10px] font-bold text-slate-700 mb-1">Tipo de documento</label>
-                <select id="doc-tipo" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-lg p-2.5">
-                    <option>Receta médica</option>
-                    <option>Resultado de laboratorio</option>
-                    <option>Diagnóstico / Informe de cita</option>
-                    <option>Otro</option>
-                </select>
-            </div>
-
-            <!-- Mode switch -->
-            <div class="flex bg-slate-100 rounded-xl p-1 text-[10px] font-bold">
-                <button type="button" id="doc-mode-file-btn" onclick="setUploadMode('file')" class="flex-1 py-2 rounded-lg bg-white shadow-sm text-indigo-700"><i class="fa-solid fa-camera"></i> Foto / PDF</button>
-                <button type="button" id="doc-mode-text-btn" onclick="setUploadMode('text')" class="flex-1 py-2 rounded-lg text-slate-500"><i class="fa-solid fa-pen"></i> Redactar</button>
-            </div>
-
-            <!-- File mode -->
-            <div id="doc-mode-file">
-                <input type="file" id="doc-file-input" accept="image/*,application/pdf" class="hidden" onchange="handleFileSelected(this)">
-                <div id="doc-dropzone" onclick="document.getElementById('doc-file-input').click()"
-                     ondragover="event.preventDefault(); this.classList.add('border-indigo-400','bg-indigo-50','dropzone-active');"
-                     ondragleave="this.classList.remove('border-indigo-400','bg-indigo-50','dropzone-active');"
-                     ondrop="handleFileDrop(event)"
-                     class="border-2 border-dashed border-slate-300 rounded-xl p-6 text-center cursor-pointer hover:border-indigo-300 transition-all duration-200">
-                    <i class="fa-solid fa-cloud-arrow-up text-2xl text-slate-400 mb-1"></i>
-                    <p class="text-[10px] text-slate-500">Toca para tomar foto o subir un PDF<br>(o arrastra el archivo aquí)</p>
-                </div>
-                <div id="doc-file-preview" class="hidden mt-3 flex items-center gap-3 bg-slate-50 border border-slate-200 rounded-xl p-3">
-                    <img id="doc-file-thumb" class="hidden w-12 h-12 rounded-lg object-cover border" />
-                    <i id="doc-file-icon" class="fa-solid fa-file-pdf text-2xl text-rose-500 hidden"></i>
-                    <div class="flex-1 min-w-0">
-                        <p id="doc-file-name" class="text-xs font-bold text-slate-800 truncate"></p>
-                        <p class="text-[9px] text-slate-500">Listo para enviar</p>
-                    </div>
-                    <button type="button" onclick="clearFileSelection()" class="text-slate-400 hover:text-rose-600"><i class="fa-solid fa-trash"></i></button>
-                </div>
-            </div>
-
-            <!-- Text mode -->
-            <div id="doc-mode-text" class="hidden">
-                <label class="block text-[10px] font-bold text-slate-700 mb-1">Escribe la información de tu cita</label>
-                <textarea id="doc-text-content" rows="5" placeholder="Ej. Me recetaron Furosemida 40mg cada 12 horas por 7 días..." class="w-full text-xs bg-slate-50 border border-slate-300 rounded-lg p-2.5"></textarea>
-            </div>
-
-            <div id="upload-progress-wrap" class="hidden space-y-1">
-                <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
-                    <div id="upload-progress-bar" class="upload-progress-bar bg-indigo-600 h-2 rounded-full" style="width:0%"></div>
-                </div>
-                <p class="text-[9px] text-slate-500 text-center">Subiendo documento de forma cifrada...</p>
-            </div>
-            <button id="upload-submit-btn" onclick="submitPatientDocument()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl shadow-sm transition disabled:opacity-70">
-                <span id="upload-submit-label"><i class="fa-solid fa-paper-plane"></i> Enviar a validación</span>
-            </button>
         </div>
     </div>
 
@@ -1221,109 +1177,7 @@
             { id: 3, tipo: 'Diagnóstico / Informe de cita', origen: 'texto', nombre: 'Control de julio: función renal estable, sin cambios en esquema...', estado: 'APROBADO' },
             { id: 4, tipo: 'Receta médica', origen: 'archivo', nombre: 'receta_furosemida_ago.jpg', estado: 'PENDIENTE' }
         ];
-        let selectedFile = null; // { file, dataUrl (si es imagen), isImage }
-        let uploadMode = 'file';
-
-        function openUploadModal() {
-            clearFileSelection();
-            document.getElementById('doc-text-content').value = '';
-            setUploadMode('file');
-            document.getElementById('modal-upload-doc').classList.remove('hidden');
-        }
-
-        function setUploadMode(mode) {
-            uploadMode = mode;
-            const fileBtn = document.getElementById('doc-mode-file-btn');
-            const textBtn = document.getElementById('doc-mode-text-btn');
-            document.getElementById('doc-mode-file').classList.toggle('hidden', mode !== 'file');
-            document.getElementById('doc-mode-text').classList.toggle('hidden', mode !== 'text');
-            fileBtn.classList.toggle('bg-white', mode === 'file'); fileBtn.classList.toggle('shadow-sm', mode === 'file'); fileBtn.classList.toggle('text-indigo-700', mode === 'file'); fileBtn.classList.toggle('text-slate-500', mode !== 'file');
-            textBtn.classList.toggle('bg-white', mode === 'text'); textBtn.classList.toggle('shadow-sm', mode === 'text'); textBtn.classList.toggle('text-indigo-700', mode === 'text'); textBtn.classList.toggle('text-slate-500', mode !== 'text');
-        }
-
-        function handleFileSelected(input) {
-            if (input.files && input.files[0]) processSelectedFile(input.files[0]);
-        }
-
-        function handleFileDrop(e) {
-            e.preventDefault();
-            e.currentTarget.classList.remove('border-indigo-400', 'bg-indigo-50', 'dropzone-active');
-            if (e.dataTransfer.files && e.dataTransfer.files[0]) processSelectedFile(e.dataTransfer.files[0]);
-        }
-
-        function processSelectedFile(file) {
-            const isImage = file.type.startsWith('image/');
-            selectedFile = { file, isImage };
-            const preview = document.getElementById('doc-file-preview');
-            preview.classList.remove('hidden');
-            preview.classList.remove('fade-in'); void preview.offsetWidth; preview.classList.add('fade-in');
-            document.getElementById('doc-file-name').innerText = file.name;
-            if (isImage) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    const thumb = document.getElementById('doc-file-thumb');
-                    thumb.src = e.target.result;
-                    thumb.classList.remove('hidden');
-                    document.getElementById('doc-file-icon').classList.add('hidden');
-                };
-                reader.readAsDataURL(file);
-            } else {
-                document.getElementById('doc-file-thumb').classList.add('hidden');
-                document.getElementById('doc-file-icon').classList.remove('hidden');
-            }
-        }
-
-        function clearFileSelection() {
-            selectedFile = null;
-            document.getElementById('doc-file-input').value = '';
-            document.getElementById('doc-file-preview').classList.add('hidden');
-        }
-
-        function submitPatientDocument() {
-            const tipo = document.getElementById('doc-tipo').value;
-            let texto = '';
-            if (uploadMode === 'file') {
-                if (!selectedFile) { showToast('Selecciona una foto o PDF primero.', 'error'); return; }
-            } else {
-                texto = document.getElementById('doc-text-content').value.trim();
-                if (!texto) { showToast('Escribe la información antes de enviar.', 'error'); return; }
-            }
-
-            const btn = document.getElementById('upload-submit-btn');
-            const label = document.getElementById('upload-submit-label');
-            const progressWrap = document.getElementById('upload-progress-wrap');
-            const progressBar = document.getElementById('upload-progress-bar');
-
-            btn.disabled = true;
-            label.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Enviando...';
-            progressWrap.classList.remove('hidden');
-            progressBar.style.width = '0%';
-
-            let pct = 0;
-            const interval = setInterval(() => {
-                pct = Math.min(pct + Math.random() * 25 + 10, 100);
-                progressBar.style.width = pct + '%';
-                if (pct >= 100) {
-                    clearInterval(interval);
-                    setTimeout(() => {
-                        if (uploadMode === 'file') {
-                            patientDocs.unshift({ id: Date.now(), tipo, origen: 'archivo', nombre: selectedFile.file.name, estado: 'PENDIENTE' });
-                        } else {
-                            patientDocs.unshift({ id: Date.now(), tipo, origen: 'texto', nombre: texto.slice(0, 40) + (texto.length > 40 ? '…' : ''), estado: 'PENDIENTE' });
-                        }
-                        btn.disabled = false;
-                        label.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Enviar a validación';
-                        progressWrap.classList.add('hidden');
-                        closeModal('modal-upload-doc');
-                        renderPatientDocs();
-                        renderPendingDocsQueue();
-                        showToast('Documento enviado. Tu médico lo validará.', 'success');
-                    }, 300);
-                }
-            }, 150);
-        }
-
-        // --- Chatbot: Asistente Paciente y RAG Médico ---
+        // --- Chatbot: Asistente Paciente, Asistente de Traslado y RAG Médico ---
         const pacChatReplies = [
             { k: ['cita', 'fecha'], r: 'Tu próxima cita es el 20/08/2026 en Nefrología Adultos, Hospital Loayza, Consultorio 21B con el Dr. Valdivia.' },
             { k: ['medicamento', 'medicina', 'pastilla'], r: 'Actualmente tomas Eritropoyetina 4000 UI y Furosemida 40mg. No olvides llevar los envases vacíos a tu próxima cita.' },
@@ -1398,6 +1252,33 @@
             }, 900 + Math.random() * 700);
         }
 
+        // Asistente de Traslado: acotado solo al proceso de transferencia hacia el servicio de adultos
+        const rutaChatReplies = [
+            { k: ['llegar', 'direccion', 'dirección', 'como llego', 'cómo llego', 'ubicacion', 'ubicación'], r: 'El Hospital Nacional Arzobispo Loayza está en Av. Alfonso Ugarte 848, Cercado de Lima. Ingresa por Admisión y muestra tu código QR; ahí te orientarán al Consultorio 21B de Nefrología Adultos.' },
+            { k: ['primera cita', 'que esperar', 'qué esperar', 'que llevar', 'qué llevar', 'llevar'], r: 'Para tu primera cita del 20/08 lleva: tu DNI, el carné de tu seguro (SIS), los envases vacíos de tus medicamentos y tu código QR. El Dr. Valdivia ya tiene acceso a tu resumen clínico, así que no necesitas repetir toda tu historia desde cero.' },
+            { k: ['nervios', 'miedo', 'ansiedad', 'asustado', 'asustada', 'nervioso', 'nerviosa'], r: 'Es totalmente normal sentir nervios por el cambio. Muchos jóvenes con tu misma condición ya pasaron por esto: el equipo de adultos ya conoce tu caso gracias al resumen que preparó tu pediatra, así que no estás empezando de cero.' },
+            { k: ['diferencia', 'distinto', 'cambia', 'como es', 'cómo es'], r: 'En el servicio de adultos tendrás más autonomía: se espera que respondas tú mismo las preguntas del médico, pero puedes seguir llevando a tu cuidador si lo necesitas. La atención es igual de rigurosa, solo cambia el enfoque hacia tu independencia.' },
+            { k: ['contacto', 'telefono', 'teléfono', 'doctor', 'medico nuevo', 'médico nuevo'], r: 'Tu nuevo médico es el Dr. Valdivia (Nefrología Adultos), Hospital Loayza, Consultorio 21B, Tel: (01) 614-4646. También lo puedes ver en el paso 2 de tu línea de tiempo.' },
+            { k: ['qr', 'codigo', 'código', 'consentimiento'], r: 'Tu código QR confirma tu asistencia y da acceso temporal a tu historia solo al médico que lo escanea. Puedes revisarlo en la pestaña "Inicio".' }
+        ];
+        function getRutaReply(text) {
+            const low = text.toLowerCase();
+            const match = rutaChatReplies.find(item => item.k.some(k => low.includes(k)));
+            return match ? match.r : 'Estoy entrenado únicamente para acompañarte en tu proceso de traslado al servicio de adultos (cómo llegar, qué llevar a tu primera cita, cómo es el cambio). Para dudas sobre medicamentos o tu diagnóstico, usa el Asistente general en la pestaña "Ayuda".';
+        }
+        function sendRutaMessage() {
+            const input = document.getElementById('ruta-chat-input');
+            const text = input.value.trim();
+            if (!text) return;
+            appendChatMessage('ruta-chat-list', text, 'user');
+            input.value = '';
+            showTypingIndicator('ruta-chat-list');
+            setTimeout(() => {
+                removeTypingIndicator('ruta-chat-list');
+                appendChatMessage('ruta-chat-list', getRutaReply(text), 'bot');
+            }, 900 + Math.random() * 700);
+        }
+
         function sendMedRagMessage() {
             const input = document.getElementById('med-chat-input');
             const text = input.value.trim();
@@ -1414,7 +1295,7 @@
         function renderPatientDocs() {
             const list = document.getElementById('pac-doc-list');
             if (!list) return;
-            if (patientDocs.length === 0) { list.innerHTML = '<p class="text-slate-400 italic text-center py-2">Aún no has subido documentos.</p>'; return; }
+            if (patientDocs.length === 0) { list.innerHTML = '<p class="text-slate-400 italic text-center py-2">Aún no hay documentos registrados en tu historia.</p>'; return; }
             list.innerHTML = patientDocs.map(d => {
                 const badge = d.estado === 'PENDIENTE'
                     ? '<span class="bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full font-bold">Pendiente</span>'
