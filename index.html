@@ -30,6 +30,10 @@
     <!-- Marked JS for RAG Markdown -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
+    <!-- Leaflet (mapa interactivo de hospitales receptores) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
     <style>
         body { font-family: 'Inter', sans-serif; }
         .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -528,22 +532,44 @@
                             <p class="text-xs text-slate-500">Derive al paciente a su nuevo centro. Esto generará su Código QR de Consentimiento.</p>
                         </div>
                     </div>
+
+                    <!-- Mapa interactivo de hospitales receptores -->
+                    <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-3">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-bold text-sm">Mapa de Hospitales Receptores</h3>
+                            <div class="flex items-center gap-3 text-[9px] text-slate-500">
+                                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-indigo-600 inline-block"></span> Origen (INSN SB)</span>
+                                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-emerald-600 inline-block"></span> Disponible</span>
+                                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block"></span> Lista de espera</span>
+                            </div>
+                        </div>
+                        <div id="hospital-map" class="w-full h-[320px] rounded-xl border border-slate-200 overflow-hidden"></div>
+                        <p class="text-[9px] text-slate-400">Toca un marcador y elige "Seleccionar este hospital" para completarlo automáticamente en el formulario de referencia.</p>
+                    </div>
+
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-4">
                             <h3 class="font-bold text-sm border-b pb-2">Hospitales Disponibles</h3>
                             <div class="space-y-2">
-                                <div class="p-3 border rounded-xl bg-slate-50 flex justify-between items-center"><div><p class="font-bold text-xs text-slate-800">Hospital Loayza</p><p class="text-[10px] text-emerald-600">Nefrología Adultos</p></div><span class="bg-emerald-100 text-emerald-800 text-[9px] px-2 py-1 rounded font-bold">Disponible</span></div>
-                                <div class="p-3 border rounded-xl bg-slate-50 flex justify-between items-center"><div><p class="font-bold text-xs text-slate-800">Hospital Dos de Mayo</p><p class="text-[10px] text-emerald-600">Hematología Adultos</p></div><span class="bg-emerald-100 text-emerald-800 text-[9px] px-2 py-1 rounded font-bold">Disponible</span></div>
-                                <div class="p-3 border rounded-xl bg-slate-50 flex justify-between items-center"><div><p class="font-bold text-xs text-slate-800">Hospital Rebagliati</p><p class="text-[10px] text-emerald-600">Endocrinología Adultos</p></div><span class="bg-emerald-100 text-emerald-800 text-[9px] px-2 py-1 rounded font-bold">Disponible</span></div>
-                                <div class="p-3 border rounded-xl bg-slate-50 flex justify-between items-center"><div><p class="font-bold text-xs text-slate-800">Hospital Almenara</p><p class="text-[10px] text-amber-600">Cardiología Adultos</p></div><span class="bg-amber-100 text-amber-800 text-[9px] px-2 py-1 rounded font-bold">Lista de Espera</span></div>
+                                <div id="hosp-item-loayza" onclick="selectHospital('loayza')" class="hospital-list-item p-3 border rounded-xl bg-slate-50 flex justify-between items-center cursor-pointer transition hover:border-indigo-300"><div><p class="font-bold text-xs text-slate-800">Hospital Loayza</p><p class="text-[10px] text-emerald-600">Nefrología Adultos</p></div><span class="bg-emerald-100 text-emerald-800 text-[9px] px-2 py-1 rounded font-bold">Disponible</span></div>
+                                <div id="hosp-item-dosdemayo" onclick="selectHospital('dosdemayo')" class="hospital-list-item p-3 border rounded-xl bg-slate-50 flex justify-between items-center cursor-pointer transition hover:border-indigo-300"><div><p class="font-bold text-xs text-slate-800">Hospital Dos de Mayo</p><p class="text-[10px] text-emerald-600">Hematología Adultos</p></div><span class="bg-emerald-100 text-emerald-800 text-[9px] px-2 py-1 rounded font-bold">Disponible</span></div>
+                                <div id="hosp-item-rebagliati" onclick="selectHospital('rebagliati')" class="hospital-list-item p-3 border rounded-xl bg-slate-50 flex justify-between items-center cursor-pointer transition hover:border-indigo-300"><div><p class="font-bold text-xs text-slate-800">Hospital Rebagliati</p><p class="text-[10px] text-emerald-600">Endocrinología Adultos</p></div><span class="bg-emerald-100 text-emerald-800 text-[9px] px-2 py-1 rounded font-bold">Disponible</span></div>
+                                <div id="hosp-item-almenara" onclick="selectHospital('almenara')" class="hospital-list-item p-3 border rounded-xl bg-slate-50 flex justify-between items-center cursor-pointer transition hover:border-indigo-300"><div><p class="font-bold text-xs text-slate-800">Hospital Almenara</p><p class="text-[10px] text-amber-600">Cardiología Adultos</p></div><span class="bg-amber-100 text-amber-800 text-[9px] px-2 py-1 rounded font-bold">Lista de Espera</span></div>
                             </div>
                         </div>
                         <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-4">
                             <h3 class="font-bold text-sm border-b pb-2">Ejecutar Referencia</h3>
                             <div class="space-y-3 text-xs">
                                 <div><label class="font-bold">Paciente:</label><select class="w-full bg-slate-50 border p-2 rounded-lg"><option>P-101 (Mateo)</option></select></div>
-                                <div><label class="font-bold">Destino:</label><select class="w-full bg-slate-50 border p-2 rounded-lg"><option>Hospital Loayza - Nefrología</option></select></div>
-                                <button onclick="showToast('Referencia ejecutada. QR Generado en la app del paciente.', 'success')" class="w-full bg-emerald-600 text-white font-bold py-2.5 rounded-xl shadow-sm"><i class="fa-solid fa-paper-plane"></i> Confirmar y Generar QR</button>
+                                <div><label class="font-bold">Destino:</label>
+                                    <select id="referencia-destino" onchange="selectHospital(this.value)" class="w-full bg-slate-50 border p-2 rounded-lg">
+                                        <option value="loayza">Hospital Loayza - Nefrología</option>
+                                        <option value="dosdemayo">Hospital Dos de Mayo - Hematología</option>
+                                        <option value="rebagliati">Hospital Rebagliati - Endocrinología</option>
+                                        <option value="almenara">Hospital Almenara - Cardiología</option>
+                                    </select>
+                                </div>
+                                <button onclick="confirmarReferencia()" class="w-full bg-emerald-600 text-white font-bold py-2.5 rounded-xl shadow-sm"><i class="fa-solid fa-paper-plane"></i> Confirmar y Generar QR</button>
                             </div>
                         </div>
                     </div>
@@ -869,29 +895,47 @@
                         <h3 class="font-semibold text-slate-800 text-sm border-b pb-2"><i class="fa-solid fa-upload"></i> Carga Institucional</h3>
                         <div class="space-y-3 text-xs">
                             <div><label class="font-bold">Paciente:</label><select class="w-full bg-slate-50 border p-2 rounded-lg"><option>P-101 (Mateo)</option></select></div>
-                            <div><label class="font-bold">Tipo Doc:</label><select class="w-full bg-slate-50 border p-2 rounded-lg"><option>Epicrisis</option><option>Nuevo Laboratorio (Adultos)</option></select></div>
+                            <div><label class="font-bold">Tipo Doc:</label><select id="ing-tipo-doc" class="w-full bg-slate-50 border p-2 rounded-lg"><option>Epicrisis</option><option>Nuevo Laboratorio (Adultos)</option></select></div>
                             <input type="file" id="ing-file-input" accept="image/*,application/pdf" class="hidden" onchange="handleIngestaFile(this)">
                             <div id="ing-dropzone" onclick="document.getElementById('ing-file-input').click()"
                                  ondragover="event.preventDefault(); this.classList.add('border-brand-400','bg-brand-50','dropzone-active');"
                                  ondragleave="this.classList.remove('border-brand-400','bg-brand-50','dropzone-active');"
                                  ondrop="handleIngestaDrop(event)"
                                  class="border-2 border-dashed border-slate-300 p-6 text-center rounded-xl bg-slate-50 cursor-pointer hover:border-brand-300 transition-all duration-200">
-                                <i class="fa-solid fa-cloud-arrow-up text-3xl text-slate-400 mb-2"></i><p>Adjuntar PDF o foto del informe<br><span class="text-[10px] text-slate-400">(o arrastra el archivo aquí)</span></p>
+                                <i class="fa-solid fa-cloud-arrow-up text-3xl text-slate-400 mb-2"></i><p>Adjuntar PDF o foto del informe físico<br><span class="text-[10px] text-slate-400">(o arrastra el archivo aquí)</span></p>
                             </div>
-                            <p id="ing-file-name" class="text-[10px] font-bold text-brand-700 hidden"></p>
-                            <div class="bg-amber-50 p-3 rounded-xl border border-amber-200">
-                                <p class="text-[10px] font-bold text-amber-900 mb-1">Carga Rápida (Demo)</p>
-                                <button onclick="showToast('Plantilla cargada', 'info')" class="bg-white border border-amber-300 text-amber-900 text-[10px] px-2 py-1 rounded">📄 Usar Plantilla Fallot</button>
+                            <div id="ing-file-preview" class="hidden flex items-center gap-3 bg-slate-50 border border-slate-200 rounded-xl p-3">
+                                <img id="ing-file-thumb" class="hidden w-12 h-12 rounded-lg object-cover border" />
+                                <i id="ing-file-icon" class="fa-solid fa-file-pdf text-2xl text-rose-500 hidden"></i>
+                                <div class="flex-1 min-w-0">
+                                    <p id="ing-file-name" class="text-xs font-bold text-slate-800 truncate"></p>
+                                    <p class="text-[9px] text-slate-500">Listo para procesar OCR</p>
+                                </div>
+                                <button type="button" onclick="clearIngestaFile()" class="text-slate-400 hover:text-rose-600"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                            <div class="bg-amber-50 p-3 rounded-xl border border-amber-200 space-y-1.5">
+                                <p class="text-[10px] font-bold text-amber-900">Carga Rápida (Demo) — simula documentos físicos escaneados</p>
+                                <div class="flex flex-wrap gap-1.5">
+                                    <button type="button" onclick="usarPlantillaIngesta('epicrisis')" class="bg-white border border-amber-300 text-amber-900 text-[10px] px-2 py-1 rounded hover:bg-amber-100 transition">📄 Epicrisis (PDF)</button>
+                                    <button type="button" onclick="usarPlantillaIngesta('laboratorio')" class="bg-white border border-amber-300 text-amber-900 text-[10px] px-2 py-1 rounded hover:bg-amber-100 transition">🧪 Laboratorio (Foto)</button>
+                                    <button type="button" onclick="usarPlantillaIngesta('receta')" class="bg-white border border-amber-300 text-amber-900 text-[10px] px-2 py-1 rounded hover:bg-amber-100 transition">✍️ Receta manuscrita (Foto)</button>
+                                </div>
                             </div>
                             <button id="ocr-process-btn" onclick="procesarOCR()" class="w-full bg-brand-600 text-white font-bold py-2.5 rounded-xl transition disabled:opacity-70">Procesar OCR</button>
                         </div>
                     </div>
                     <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
                         <h3 class="font-semibold text-slate-800 text-sm border-b pb-2"><i class="fa-solid fa-pen-to-square"></i> Estudio OCR (Aprobación)</h3>
-                        <p class="text-[10px] text-slate-500">Valide el texto extraído antes de pasarlo a Capa Oro.</p>
-                        <textarea rows="8" class="w-full text-xs font-mono bg-slate-50 border rounded-lg p-2">[OCR SIMULADO] Paciente P-101. Diagnóstico ERC...</textarea>
-                        <button onclick="showToast('Aprobado a Capa Oro. Indexado para RAG.', 'success')" class="w-full bg-emerald-600 text-white font-bold py-2 rounded-xl">Aprobar a Capa Oro</button>
+                        <p id="ing-ocr-source" class="text-[10px] text-slate-500">Valide el texto extraído antes de pasarlo a Capa Oro.</p>
+                        <textarea id="ing-ocr-textarea" rows="8" class="w-full text-xs font-mono bg-slate-50 border rounded-lg p-2">Seleccione una plantilla o cargue un archivo y presione "Procesar OCR" para simular la extracción de texto.</textarea>
+                        <button onclick="aprobarCapaOro()" class="w-full bg-emerald-600 text-white font-bold py-2 rounded-xl">Aprobar a Capa Oro</button>
                     </div>
+                </div>
+
+                <!-- Documentos indexados en Capa Oro (sesión actual) -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-3">
+                    <h3 class="font-semibold text-slate-800 text-sm border-b pb-2 flex items-center gap-2"><i class="fa-solid fa-database text-emerald-600"></i> Documentos Indexados en Capa Oro</h3>
+                    <div id="ing-approved-list" class="space-y-2"></div>
                 </div>
 
                 <!-- Aportes del Paciente (Pendientes de validación) -->
@@ -1012,8 +1056,10 @@
             if(tabId === 'ingesta') {
                 document.getElementById('shared-ingesta').classList.remove('hidden');
                 renderPendingDocsQueue();
+                renderCapaOroIndexados();
             } else {
                 document.getElementById(`${rolePrefix === 'pac' ? 'pac-view' : rolePrefix}-${tabId}`).classList.remove('hidden');
+                if (tabId === 'directorio') setTimeout(initHospitalMap, 50);
             }
 
             // Tabs styling
@@ -1061,6 +1107,71 @@
             const note = document.getElementById('bit-nota').value;
             tl.innerHTML = `<div class="relative"><span class="absolute -left-7 top-1 w-3 h-3 rounded-full bg-insn-500 border-2 border-white ring-2 ring-insn-200"></span><h4 class="font-bold">${type}</h4><p class="text-slate-500">Hoy - ${note}</p></div>` + tl.innerHTML;
             showToast('Añadido a Bitácora.', 'success');
+        }
+
+        // --- Módulo 5: Mapa interactivo de hospitales receptores (coordenadas reales, Lima) ---
+        const INSN_SB_ORIGEN = { nombre: 'INSN San Borja (Origen)', lat: -12.08564, lng: -76.99218 };
+        const HOSPITALS_MAP_DATA = {
+            loayza: { nombre: 'Hospital Loayza', esp: 'Nefrología Adultos', estado: 'Disponible', lat: -12.0497651, lng: -77.0443704 },
+            dosdemayo: { nombre: 'Hospital Dos de Mayo', esp: 'Hematología Adultos', estado: 'Disponible', lat: -12.0560538, lng: -77.0157291 },
+            rebagliati: { nombre: 'Hospital Rebagliati', esp: 'Endocrinología Adultos', estado: 'Disponible', lat: -12.0782058, lng: -77.0399865 },
+            almenara: { nombre: 'Hospital Almenara', esp: 'Cardiología Adultos', estado: 'Lista de Espera', lat: -12.0593133, lng: -77.0228180 }
+        };
+        let hospitalMapInstance = null;
+        let hospitalMapMarkers = {};
+
+        function initHospitalMap() {
+            const container = document.getElementById('hospital-map');
+            if (!container || typeof L === 'undefined') return;
+            if (hospitalMapInstance) { hospitalMapInstance.invalidateSize(); return; }
+
+            const map = L.map('hospital-map', { scrollWheelZoom: false }).setView([-12.067, -77.025], 12);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>', maxZoom: 18
+            }).addTo(map);
+
+            const buildIcon = (color, size) => L.divIcon({
+                className: '', iconSize: [size, size], iconAnchor: [size / 2, size / 2],
+                html: `<div style="background:${color};width:${size}px;height:${size}px;border-radius:50%;border:2px solid white;box-shadow:0 1px 6px rgba(0,0,0,0.45);"></div>`
+            });
+
+            L.marker([INSN_SB_ORIGEN.lat, INSN_SB_ORIGEN.lng], { icon: buildIcon('#4f46e5', 18) }).addTo(map)
+                .bindPopup(`<div style="font-size:12px;min-width:150px"><strong>${INSN_SB_ORIGEN.nombre}</strong><br>Punto de origen de la referencia</div>`);
+
+            Object.entries(HOSPITALS_MAP_DATA).forEach(([key, h]) => {
+                const color = h.estado === 'Disponible' ? '#059669' : '#d97706';
+                const marker = L.marker([h.lat, h.lng], { icon: buildIcon(color, 16) }).addTo(map);
+                marker.bindPopup(`<div style="font-size:12px;min-width:170px">
+                    <strong>${h.nombre}</strong><br>${h.esp}<br>
+                    <span style="color:${color};font-weight:bold">${h.estado}</span><br>
+                    <button onclick="selectHospital('${key}')" style="margin-top:6px;background:#4f46e5;color:white;border:none;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer;">Seleccionar este hospital</button>
+                </div>`);
+                hospitalMapMarkers[key] = marker;
+            });
+
+            hospitalMapInstance = map;
+            setTimeout(() => map.invalidateSize(), 150);
+        }
+
+        function selectHospital(key) {
+            const h = HOSPITALS_MAP_DATA[key];
+            if (!h) return;
+            const sel = document.getElementById('referencia-destino');
+            if (sel) sel.value = key;
+            document.querySelectorAll('.hospital-list-item').forEach(el => el.classList.remove('ring-2', 'ring-indigo-400', 'bg-indigo-50'));
+            const item = document.getElementById('hosp-item-' + key);
+            if (item) item.classList.add('ring-2', 'ring-indigo-400', 'bg-indigo-50');
+            if (hospitalMapInstance && hospitalMapMarkers[key]) {
+                hospitalMapInstance.flyTo([h.lat, h.lng], 14, { duration: 0.6 });
+                hospitalMapMarkers[key].openPopup();
+            }
+            showToast(`${h.nombre} seleccionado como destino de referencia.`, 'info');
+        }
+
+        function confirmarReferencia() {
+            const sel = document.getElementById('referencia-destino');
+            const h = HOSPITALS_MAP_DATA[sel ? sel.value : 'loayza'];
+            showToast(`Referencia ejecutada a ${h ? h.nombre : 'hospital seleccionado'}. QR Generado en la app del paciente.`, 'success');
         }
 
         // --- Resumen M4 & PDF ---
@@ -1357,31 +1468,123 @@
             }, 1000);
         }
 
+        // --- Ingesta M7: simulación de digitalización de documentos físicos (imágenes / diagnósticos en papel) ---
+        const ingestaTemplates = {
+            epicrisis: {
+                filename: 'epicrisis_nefrologia_jul2026.pdf', isImage: false, tipoDoc: 'Epicrisis',
+                ocr: '[OCR - EPICRISIS] Paciente P-101 (Mateo). Servicio: Nefrología Pediátrica.\nMotivo de alta: Control de Enfermedad Renal Crónica Estadio V en hemodiálisis.\nIndicaciones: continuar esquema de Eritropoyetina 4000 UI y Furosemida 40mg.\nPróximo control: Nefrología Adultos, Hosp. Loayza, 20/08/2026.'
+            },
+            laboratorio: {
+                filename: 'foto_lab_creatinina_ago2026.jpg', isImage: true, tipoDoc: 'Nuevo Laboratorio (Adultos)',
+                ocr: '[OCR - LABORATORIO] Paciente P-101. Fecha: 10/08/2026.\nCreatinina sérica: 4.8 mg/dL\nUrea: 92 mg/dL\nPotasio: 5.1 mEq/L (elevado)\nHemoglobina: 9.6 g/dL\nObservación: valores compatibles con ERC Estadio V en diálisis.'
+            },
+            receta: {
+                filename: 'foto_receta_manuscrita.jpg', isImage: true, tipoDoc: 'Epicrisis',
+                ocr: '[OCR - RECETA MANUSCRITA] Dr. C. Torres (Pediatra).\nRp: Eritropoyetina 4000 UI subcutánea, 3 veces por semana.\nFurosemida 40mg VO cada 12 horas.\n⚠ Firma y sello parcialmente ilegibles — verificar con el médico tratante antes de indexar.'
+            }
+        };
+        let ingestaSelectedFile = null; // { filename, isImage, template }
+
+        function usarPlantillaIngesta(key) {
+            const t = ingestaTemplates[key];
+            if (!t) return;
+            ingestaSelectedFile = { filename: t.filename, isImage: t.isImage, template: key };
+            document.getElementById('ing-tipo-doc').value = t.tipoDoc;
+            showIngestaPreview(t.filename, t.isImage, null);
+            showToast(`Plantilla cargada: ${t.filename}`, 'info');
+        }
+
         function handleIngestaFile(input) {
-            if (input.files && input.files[0]) showIngestaFileName(input.files[0].name);
+            if (input.files && input.files[0]) processIngestaFile(input.files[0]);
         }
         function handleIngestaDrop(e) {
             e.preventDefault();
             e.currentTarget.classList.remove('border-brand-400', 'bg-brand-50', 'dropzone-active');
-            if (e.dataTransfer.files && e.dataTransfer.files[0]) showIngestaFileName(e.dataTransfer.files[0].name);
+            if (e.dataTransfer.files && e.dataTransfer.files[0]) processIngestaFile(e.dataTransfer.files[0]);
         }
-        function showIngestaFileName(name) {
-            const el = document.getElementById('ing-file-name');
-            el.innerText = `📎 ${name}`;
-            el.classList.remove('hidden');
+        function processIngestaFile(file) {
+            const isImage = file.type.startsWith('image/');
+            ingestaSelectedFile = { filename: file.name, isImage, template: null };
+            if (isImage) {
+                const reader = new FileReader();
+                reader.onload = (e) => showIngestaPreview(file.name, true, e.target.result);
+                reader.readAsDataURL(file);
+            } else {
+                showIngestaPreview(file.name, false, null);
+            }
+        }
+        function showIngestaPreview(filename, isImage, dataUrl) {
+            const preview = document.getElementById('ing-file-preview');
+            preview.classList.remove('hidden');
+            preview.classList.remove('fade-in'); void preview.offsetWidth; preview.classList.add('fade-in');
+            document.getElementById('ing-file-name').innerText = filename;
+            const thumb = document.getElementById('ing-file-thumb');
+            const icon = document.getElementById('ing-file-icon');
+            if (isImage && dataUrl) {
+                thumb.src = dataUrl; thumb.classList.remove('hidden'); icon.classList.add('hidden');
+            } else if (isImage) {
+                thumb.classList.add('hidden'); icon.className = 'fa-solid fa-image text-2xl text-sky-500'; icon.classList.remove('hidden');
+            } else {
+                thumb.classList.add('hidden'); icon.className = 'fa-solid fa-file-pdf text-2xl text-rose-500'; icon.classList.remove('hidden');
+            }
+        }
+        function clearIngestaFile() {
+            ingestaSelectedFile = null;
+            document.getElementById('ing-file-input').value = '';
+            document.getElementById('ing-file-preview').classList.add('hidden');
         }
 
         function procesarOCR() {
             const btn = document.getElementById('ocr-process-btn');
             if (btn.disabled) return;
+            if (!ingestaSelectedFile) { showToast('Adjunte un documento o use una plantilla de demo primero.', 'error'); return; }
             btn.disabled = true;
-            const original = btn.innerText;
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Procesando OCR...';
+            const stages = ['<i class="fa-solid fa-spinner fa-spin"></i> Escaneando documento...', '<i class="fa-solid fa-spinner fa-spin"></i> Aplicando OCR...', '<i class="fa-solid fa-spinner fa-spin"></i> Extrayendo estructura clínica...'];
+            let i = 0;
+            btn.innerHTML = stages[0];
+            const stageInterval = setInterval(() => {
+                i++;
+                if (i < stages.length) btn.innerHTML = stages[i];
+            }, 600);
             setTimeout(() => {
+                clearInterval(stageInterval);
                 btn.disabled = false;
-                btn.innerText = original;
+                btn.innerText = 'Procesar OCR';
+
+                const template = ingestaSelectedFile.template ? ingestaTemplates[ingestaSelectedFile.template] : null;
+                const tipoDocSel = document.getElementById('ing-tipo-doc').value;
+                const ocrText = template ? template.ocr : `[OCR generado] Documento: ${ingestaSelectedFile.filename}\nTipo: ${tipoDocSel}\n(Texto extraído simulado — valide contra el documento físico antes de aprobar).`;
+                document.getElementById('ing-ocr-textarea').value = ocrText;
+                document.getElementById('ing-ocr-source').innerHTML = `Extraído de: <strong>${ingestaSelectedFile.filename}</strong>. Valide el texto antes de pasarlo a Capa Oro.`;
                 showToast('OCR Procesado a Capa Bronce', 'success');
-            }, 1400);
+            }, 600 * stages.length);
+        }
+
+        let capaOroIndexados = [
+            { nombre: 'receta_nefro_ago.jpg', tipo: 'Receta médica', fecha: 'Hace 2 días' },
+            { nombre: 'epicrisis_2025.pdf', tipo: 'Epicrisis', fecha: 'Hace 1 semana' }
+        ];
+        function renderCapaOroIndexados() {
+            const list = document.getElementById('ing-approved-list');
+            if (!list) return;
+            if (capaOroIndexados.length === 0) { list.innerHTML = '<p class="text-slate-400 italic text-center py-3 text-xs">Aún no hay documentos indexados en esta sesión.</p>'; return; }
+            list.innerHTML = capaOroIndexados.map(d => `
+                <div class="bg-white border border-emerald-200 rounded-xl p-3 flex items-center gap-3 shadow-sm fade-in">
+                    <i class="fa-solid fa-circle-check text-emerald-500"></i>
+                    <div class="flex-1 min-w-0"><p class="font-bold text-slate-800 text-xs truncate">${d.tipo} — P-101 (Mateo)</p><p class="text-[10px] text-slate-500 truncate">${d.nombre}</p></div>
+                    <span class="text-[9px] text-slate-400 whitespace-nowrap">${d.fecha}</span>
+                </div>`).join('');
+        }
+
+        function aprobarCapaOro() {
+            const filename = ingestaSelectedFile ? ingestaSelectedFile.filename : 'documento_sin_ocr.pdf';
+            const tipoDoc = document.getElementById('ing-tipo-doc').value;
+            capaOroIndexados.unshift({ nombre: filename, tipo: tipoDoc, fecha: 'Justo ahora' });
+            renderCapaOroIndexados();
+            showToast('Aprobado a Capa Oro. Indexado para RAG.', 'success');
+            clearIngestaFile();
+            document.getElementById('ing-ocr-textarea').value = 'Seleccione una plantilla o cargue un archivo y presione "Procesar OCR" para simular la extracción de texto.';
+            document.getElementById('ing-ocr-source').innerText = 'Valide el texto extraído antes de pasarlo a Capa Oro.';
         }
 
         // Utils
